@@ -1,6 +1,6 @@
 ﻿{
   "name": "novra-logger-monorepo",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "private": true,
   "description": "Universal log collection and management library for Electron, Tauri, and Node.js. Features cascade file rotation, automatic expired log cleanup, sensitive data masking, multi-user isolation, and one-click diagnostic ZIP packaging.",
   "author": {
