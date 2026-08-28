@@ -1,0 +1,10 @@
+﻿node_modules
+dist
+coverage
+*.log
+*.zip
+.DS_Store
+Thumbs.db
+.vscode
+.idea
+*.tsbuildinfo

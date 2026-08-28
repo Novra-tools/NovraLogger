@@ -1,0 +1,84 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NovraLogger Interactive Demo</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-container">
+    <header class="header">
+      <div class="brand">
+        <div class="logo">🌲</div>
+        <div>
+          <h1>@novra/logger</h1>
+          <p class="subtitle">Interactive Electron Demonstration • <a href="https://x.com/novratools" target="_blank">@novratools</a></p>
+        </div>
+      </div>
+      <div class="path-badge" id="currentLogDir">Loading log directory...</div>
+    </header>
+
+    <main class="grid-layout">
+      <!-- 1. 主进程日志测试 -->
+      <section class="card">
+        <h2>🖥️ Main Process Logger</h2>
+        <p class="card-desc">Emits logs directly inside the Electron Main Process via <code>logger.scope()</code>.</p>
+        <div class="button-group">
+          <button class="btn btn-info" id="btnMainInfo">Info Log</button>
+          <button class="btn btn-warn" id="btnMainWarn">Warn Log</button>
+          <button class="btn btn-error" id="btnMainError">Error (Exception)</button>
+          <button class="btn btn-mask" id="btnMainMask">Sensitive Masking Test</button>
+        </div>
+      </section>
+
+      <!-- 2. 渲染进程日志测试 -->
+      <section class="card">
+        <h2>🌐 Renderer Process Logger</h2>
+        <p class="card-desc">Powered by <code>@novra/logger/renderer</code>. Transmits logs over Preload IPC with auto sanitization.</p>
+        
+        <div class="user-selector">
+          <label>Active User Context (Multi-Tenant Isolation):</label>
+          <select id="userSelect">
+            <option value="">Global Application Log (logs/app)</option>
+            <option value="user_alice">User Alice (logs/users/user_alice)</option>
+            <option value="user_bob">User Bob (logs/users/user_bob)</option>
+          </select>
+        </div>
+
+        <div class="button-group">
+          <button class="btn btn-primary" id="btnRenderInfo">UI Action (Info)</button>
+          <button class="btn btn-warn" id="btnRenderWarn">Network Retry (Warn)</button>
+          <button class="btn btn-error" id="btnRenderError">Render Error (Error)</button>
+          <button class="btn btn-mask" id="btnRenderMask">Masking (Token/Phone/Email)</button>
+        </div>
+      </section>
+
+      <!-- 3. 日志打包与一键清理服务 -->
+      <section class="card full-width">
+        <h2>📦 Diagnostic & One-Click Cleanup</h2>
+        <p class="card-desc">One-click ZIP packaging for user bug feedback, folder exploration, and one-click log wipe.</p>
+        <div class="action-bar">
+          <button class="btn btn-pack" id="btnPackLogs">📦 Pack Logs to ZIP (Pure JS)</button>
+          <button class="btn btn-outline" id="btnOpenFolder">📂 Open Log Folder in Explorer</button>
+          <button class="btn btn-warn" id="btnClearUserLogs">🧹 Clear Current User Logs</button>
+          <button class="btn btn-danger" id="btnClearAllLogs">💥 Wipe ALL Local Logs</button>
+          <button class="btn btn-refresh" id="btnRefreshLogs">🔄 Refresh Live Feed</button>
+        </div>
+        <div id="packResult" class="pack-result-box" style="display: none;"></div>
+      </section>
+
+      <!-- 4. 实时日志预览窗口 -->
+      <section class="card full-width log-viewer-card">
+        <div class="viewer-header">
+          <h2>📜 Live Log Feed (Tail 50 Lines)</h2>
+          <span class="status-indicator" id="liveStatus">● Auto-updating</span>
+        </div>
+        <pre class="terminal" id="logTerminal">Loading logs...</pre>
+      </section>
+    </main>
+  </div>
+
+  <script src="renderer.js"></script>
+</body>
+</html>

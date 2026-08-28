@@ -1,0 +1,17 @@
+﻿# Source & Development
+src/
+test/
+*.tsbuildinfo
+tsconfig.json
+tsup.config.ts
+vitest.config.ts
+
+# Temporary & Environment
+.tmp*
+*.log
+*.zip
+.env*
+.DS_Store
+Thumbs.db
+node_modules/
+coverage/

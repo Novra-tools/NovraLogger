@@ -1,0 +1,23 @@
+﻿{
+  "name": "electron-demo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Interactive demonstration for novra-logger in Electron",
+  "main": "./dist/main.js",
+  "scripts": {
+    "build": "tsup",
+    "typecheck": "tsc --noEmit",
+    "start": "tsup && electron ./dist/main.js",
+    "clean": "rimraf dist"
+  },
+  "dependencies": {
+    "novra-logger": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.5",
+    "electron": "^42.8.0",
+    "rimraf": "^6.0.1",
+    "tsup": "^8.4.0",
+    "typescript": "^5.7.3"
+  }
+}

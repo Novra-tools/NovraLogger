@@ -1,0 +1,240 @@
+﻿:root {
+  --bg: #0f172a;
+  --surface: #1e293b;
+  --surface-hover: #334155;
+  --text: #f8fafc;
+  --text-muted: #94a3b8;
+  --primary: #3b82f6;
+  --primary-hover: #2563eb;
+  --success: #10b981;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+  --border: #334155;
+  --radius: 10px;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  background-color: var(--bg);
+  color: var(--text);
+  line-height: 1.5;
+  padding: 24px;
+}
+
+.app-container {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.logo {
+  font-size: 32px;
+  background: #1e293b;
+  padding: 8px 12px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+}
+
+h1 {
+  font-size: 22px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.subtitle {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.subtitle a {
+  color: var(--primary);
+  text-decoration: none;
+}
+
+.subtitle a:hover {
+  text-decoration: underline;
+}
+
+.path-badge {
+  font-family: monospace;
+  font-size: 12px;
+  background: #090d16;
+  border: 1px solid var(--border);
+  padding: 6px 12px;
+  border-radius: 6px;
+  color: var(--text-muted);
+  max-width: 400px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.grid-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.full-width {
+  grid-column: span 2;
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+}
+
+.card h2 {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.card-desc {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-bottom: 16px;
+}
+
+.card-desc code {
+  background: #090d16;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 12px;
+  color: #38bdf8;
+}
+
+.user-selector {
+  margin-bottom: 16px;
+}
+
+.user-selector label {
+  display: block;
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+}
+
+.user-selector select {
+  width: 100%;
+  padding: 8px 12px;
+  background: #090d16;
+  border: 1px solid var(--border);
+  color: #fff;
+  border-radius: 6px;
+  outline: none;
+  font-size: 13px;
+}
+
+.button-group, .action-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.btn {
+  padding: 8px 14px;
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.1s ease;
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+}
+
+.btn:active {
+  transform: translateY(0);
+}
+
+.btn-primary { background: var(--primary); color: #fff; }
+.btn-primary:hover { background: var(--primary-hover); }
+
+.btn-info { background: #0284c7; color: #fff; }
+.btn-info:hover { background: #0369a1; }
+
+.btn-warn { background: #d97706; color: #fff; }
+.btn-warn:hover { background: #b45309; }
+
+.btn-error { background: #dc2626; color: #fff; }
+.btn-error:hover { background: #b91c1c; }
+
+.btn-mask { background: #7c3aed; color: #fff; }
+.btn-mask:hover { background: #6d28d9; }
+
+.btn-pack { background: #059669; color: #fff; font-weight: 600; }
+.btn-pack:hover { background: #047857; }
+
+.btn-outline { background: transparent; border: 1px solid var(--border); color: #fff; }
+.btn-outline:hover { background: var(--surface-hover); }
+
+.btn-danger { background: #991b1b; color: #fff; }
+.btn-danger:hover { background: #7f1d1d; }
+
+.btn-refresh { background: #475569; color: #fff; }
+.btn-refresh:hover { background: #334155; }
+
+.pack-result-box {
+  margin-top: 14px;
+  padding: 12px 16px;
+  background: #022c22;
+  border: 1px solid #059669;
+  border-radius: 6px;
+  font-size: 13px;
+  color: #a7f3d0;
+}
+
+.log-viewer-card {
+  margin-top: 4px;
+}
+
+.viewer-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.status-indicator {
+  font-size: 12px;
+  color: var(--success);
+}
+
+.terminal {
+  background: #070b12;
+  border: 1px solid #1e293b;
+  border-radius: 6px;
+  padding: 14px;
+  font-family: Consolas, "Courier New", monospace;
+  font-size: 12px;
+  color: #38bdf8;
+  height: 240px;
+  overflow-y: auto;
+  white-space: pre-wrap;
+  word-break: break-all;
+}

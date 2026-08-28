@@ -1,0 +1,45 @@
+﻿{
+  "name": "novra-logger-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Universal log collection and management library for Electron, Tauri, and Node.js. Features cascade file rotation, automatic expired log cleanup, sensitive data masking, multi-user isolation, and one-click diagnostic ZIP packaging.",
+  "author": {
+    "name": "Novra Tools",
+    "url": "https://x.com/novratools"
+  },
+  "homepage": "https://x.com/novratools",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Novra-tools/NovraLogger.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Novra-tools/NovraLogger/issues"
+  },
+  "keywords": [
+    "novra",
+    "novratools",
+    "novra-logger",
+    "logger",
+    "logging",
+    "electron-logger",
+    "tauri-logger",
+    "log-rotation",
+    "log-sanitizer",
+    "log-packer",
+    "log-zip",
+    "desktop-logger",
+    "diagnostic-logs",
+    "crash-reporter"
+  ],
+  "packageManager": "pnpm@11.1.2",
+  "scripts": {
+    "build": "pnpm --filter novra-logger build",
+    "test": "pnpm --filter novra-logger test",
+    "typecheck": "pnpm -r --parallel typecheck",
+    "demo": "pnpm --filter electron-demo start",
+    "clean": "pnpm -r --parallel clean",
+    "release:check": "node scripts/verify-release.mjs",
+    "release:dry": "node scripts/release.mjs --dry-run",
+    "release": "node scripts/release.mjs"
+  }
+}

@@ -1,0 +1,136 @@
+﻿{
+  "name": "novra-logger",
+  "version": "1.0.0",
+  "description": "Universal log collection and management library for Electron, Tauri, and Node.js. Features cascade file rotation, automatic expired log cleanup, sensitive data masking, multi-user isolation, and one-click diagnostic ZIP packaging.",
+  "license": "MIT",
+  "author": {
+    "name": "Novra Tools",
+    "url": "https://x.com/novratools"
+  },
+  "keywords": [
+    "novra",
+    "novratools",
+    "novra-logger",
+    "logger",
+    "logging",
+    "log",
+    "electron",
+    "electron-log",
+    "electron-logger",
+    "electron-logging",
+    "electron-plugin",
+    "tauri",
+    "tauri-logger",
+    "tauri-plugin",
+    "tauri-plugin-log",
+    "desktop-logger",
+    "desktop-app",
+    "log-rotation",
+    "log-rotator",
+    "rotating-file",
+    "log-cleaner",
+    "log-cleanup",
+    "log-packer",
+    "log-zip",
+    "log-sanitizer",
+    "data-masking",
+    "sensitive-data-masking",
+    "token-masking",
+    "diagnostic-logs",
+    "crash-reporter",
+    "crash-dump",
+    "feedback-logs",
+    "nodejs-logger",
+    "file-logger",
+    "zero-dependency",
+    "logger-zero-dependency"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Novra-tools/NovraLogger.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Novra-tools/NovraLogger/issues"
+  },
+  "homepage": "https://x.com/novratools",
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/",
+    "tag": "latest"
+  },
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist",
+    "CHANGELOG.md",
+    "LICENSE",
+    "README*.md"
+  ],
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    },
+    "./electron": {
+      "import": {
+        "types": "./dist/electron.d.ts",
+        "default": "./dist/electron.js"
+      },
+      "require": {
+        "types": "./dist/electron.d.cts",
+        "default": "./dist/electron.cjs"
+      }
+    },
+    "./renderer": {
+      "import": {
+        "types": "./dist/renderer.d.ts",
+        "default": "./dist/renderer.js"
+      },
+      "require": {
+        "types": "./dist/renderer.d.cts",
+        "default": "./dist/renderer.cjs"
+      }
+    },
+    "./types": {
+      "import": {
+        "types": "./dist/types.d.ts",
+        "default": "./dist/types.js"
+      },
+      "require": {
+        "types": "./dist/types.d.cts",
+        "default": "./dist/types.cjs"
+      }
+    }
+  },
+  "scripts": {
+    "clean": "rimraf dist coverage",
+    "build": "pnpm run clean && tsup",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "prepack": "pnpm run build",
+    "prepublishOnly": "pnpm run typecheck && pnpm run test && pnpm run build"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "packageManager": "pnpm@11.1.2",
+  "dependencies": {
+    "fflate": "^0.8.2"
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.5",
+    "rimraf": "^6.0.1",
+    "tsup": "^8.4.0",
+    "typescript": "^5.7.3",
+    "vitest": "^3.0.7"
+  }
+}
