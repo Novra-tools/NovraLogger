@@ -1,4 +1,4 @@
-﻿{
+{
   "name": "novra-logger-monorepo",
   "version": "1.0.1",
   "private": true,
@@ -35,9 +35,9 @@
   "scripts": {
     "build": "pnpm --filter novra-logger build",
     "test": "pnpm --filter novra-logger test",
-    "typecheck": "pnpm -r --parallel typecheck",
+    "typecheck": "pnpm -r --parallel run typecheck",
     "demo": "pnpm --filter electron-demo start",
-    "clean": "pnpm -r --parallel clean",
+    "clean": "pnpm -r --parallel run clean",
     "release:check": "node scripts/verify-release.mjs",
     "release:dry": "node scripts/release.mjs --dry-run",
     "release": "node scripts/release.mjs"

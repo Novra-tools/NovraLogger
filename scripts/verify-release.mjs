@@ -1,17 +1,17 @@
-﻿import { execSync } from 'node:child_process';
+import { execSync } from 'node:child_process';
 import { join } from 'node:path';
 
 const ROOT_DIR = process.cwd();
 const PKG_DIR = join(ROOT_DIR, 'packages', 'logger');
 
-console.log('\n🔒 [1/4] Running strict monorepo typecheck...');
+console.log('\n📦 [1/4] Building clean distribution artifacts...');
+execSync('pnpm build', { stdio: 'inherit', cwd: ROOT_DIR });
+
+console.log('\n🔒 [2/4] Running strict monorepo typecheck...');
 execSync('pnpm run typecheck', { stdio: 'inherit', cwd: ROOT_DIR });
 
-console.log('\n🧪 [2/4] Running complete test suite...');
+console.log('\n🧪 [3/4] Running complete test suite...');
 execSync('pnpm test', { stdio: 'inherit', cwd: ROOT_DIR });
-
-console.log('\n📦 [3/4] Building clean distribution artifacts...');
-execSync('pnpm build', { stdio: 'inherit', cwd: ROOT_DIR });
 
 console.log('\n🛡️ [4/4] Inspecting npm tarball for sensitive content and file leaks...');
 const packRaw = execSync('npm pack --dry-run --ignore-scripts --json', { cwd: PKG_DIR }).toString().replace(/^\uFEFF/, '');
