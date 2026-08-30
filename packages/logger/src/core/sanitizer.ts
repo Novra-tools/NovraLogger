@@ -1,6 +1,6 @@
-﻿import type { SerializedError } from '../types';
+import type { SerializedError } from '../types';
 
-/** 默认敏感字段名称集合（大小写不敏感处理） */
+/** Default sensitive field names (handled case-insensitively) */
 const DEFAULT_SENSITIVE_KEYS = new Set([
   'accesstoken',
   'refreshtoken',
@@ -20,7 +20,7 @@ const DEFAULT_SENSITIVE_KEYS = new Set([
   'creditcard',
 ]);
 
-/** 敏感字段专属掩码标记，保留字段类型线索以辅助故障诊断 */
+/** Sensitive field type-preserving mask tags to assist troubleshooting */
 const DEFAULT_MASKS: Record<string, string> = {
   accesstoken: '[atoken]',
   refreshtoken: '[rtoken]',
@@ -41,7 +41,7 @@ const DEFAULT_MASKS: Record<string, string> = {
 };
 
 /**
- * 敏感数据脱敏与数据清洗器
+ * Sensitive data masking and sanitization utility
  */
 export class LogSanitizer {
   private sensitiveKeys: Set<string>;
@@ -55,23 +55,23 @@ export class LogSanitizer {
       }
     }
 
-    // 预编译用于匹配 JSON 字符串中敏感键值对的正则表达式
+    // Precompile regex for matching sensitive key-value pairs in JSON strings
     const keysPattern = Array.from(this.sensitiveKeys).join('|');
     this.jsonRegex = new RegExp(`("(${keysPattern})"\\s*:\\s*")[^"]*(")`, 'gi');
   }
 
   /**
-   * 清理字符串文本中的认证头部、URL 参数及内联 JSON 敏感信息
+   * Sanitize Bearer tokens, URL query parameters, and inline JSON in string messages
    */
   public sanitizeText(text: string): string {
     if (!text || typeof text !== 'string') return text;
 
     return text
-      // 1. 过滤 Bearer Token 授权头
+      // 1. Mask Bearer authorization headers
       .replace(/Bearer\s+[A-Za-z0-9._~+/=-]+/gi, 'Bearer [auth]')
-      // 2. 过滤 URL 查询参数中的敏感 token
+      // 2. Mask sensitive query parameters in URLs
       .replace(/([?&](?:access_token|refresh_token|token|secret|apiKey)=)[^&\s]+/gi, '$1[token]')
-      // 3. 过滤 JSON 字符串格式的敏感字段
+      // 3. Mask sensitive keys in JSON string format
       .replace(this.jsonRegex, (_match, left: string, key: string, right: string) => {
         const lowerKey = key.toLowerCase();
         const mask = DEFAULT_MASKS[lowerKey] ?? '[masked]';
@@ -80,7 +80,7 @@ export class LogSanitizer {
   }
 
   /**
-   * 将任意 Error 实例或包含错误信息的对象转化为标准化且已脱敏的 SerializedError 结构
+   * Normalize and sanitize an Error instance or error-like object into a SerializedError structure
    */
   public serializeError(error: unknown): SerializedError | undefined {
     if (!error) return undefined;
@@ -102,7 +102,7 @@ export class LogSanitizer {
   }
 
   /**
-   * 递归清理任意对象、数组或基础类型中的敏感数据，并防范循环引用
+   * Recursively clean sensitive data from objects, arrays, and primitives with circular reference protection
    */
   public sanitizeValue(val: unknown, seen = new WeakSet()): unknown {
     if (val === undefined || val === null) return val;
@@ -123,18 +123,18 @@ export class LogSanitizer {
       return val;
     }
 
-    // 防止循环引用导致调用栈溢出
+    // Prevent circular reference call stack overflow
     if (seen.has(val as object)) {
       return '[Circular]';
     }
     seen.add(val as object);
 
-    // 递归处理数组
+    // Recursively process arrays
     if (Array.isArray(val)) {
       return val.map(item => this.sanitizeValue(item, seen));
     }
 
-    // 递归处理普通对象
+    // Recursively process plain objects
     const record = val as Record<string, unknown>;
     const result: Record<string, unknown> = {};
 
@@ -151,7 +151,7 @@ export class LogSanitizer {
   }
 
   /**
-   * 将任意附加数据序列化为安全、脱敏的 JSON 字符串（无法序列化时回退至字符串转换）
+   * Serialize payload data to a safe, sanitized JSON string (with fallback to string conversion)
    */
   public stringify(data: unknown): string {
     if (data === undefined) return '';
@@ -166,5 +166,6 @@ export class LogSanitizer {
   }
 }
 
-/** 默认的全局单例脱敏器实例 */
+/** Default global singleton sanitizer instance */
 export const defaultSanitizer = new LogSanitizer();
+

@@ -1,4 +1,4 @@
-﻿import { execSync } from 'node:child_process';
+import { execSync } from 'node:child_process';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
@@ -9,7 +9,7 @@ const pkgJson = JSON.parse(rawPkg);
 
 const isDryRun = process.argv.includes('--dry-run');
 
-// 解析传入的 --otp 参数
+// Parse incoming --otp argument
 const otpArg = process.argv.find(arg => arg.startsWith('--otp=') || arg === '--otp');
 let otpFlag = '';
 if (otpArg) {
@@ -25,7 +25,7 @@ if (otpArg) {
 
 console.log(`\n🚀 Starting one-click release pipeline for ${pkgJson.name} (v${pkgJson.version})...\n`);
 
-// 1. 运行安全审计与构建校验
+// 1. Run security audit and build verification
 try {
   execSync('node scripts/verify-release.mjs', { stdio: 'inherit', cwd: ROOT_DIR });
 } catch (err) {
@@ -33,7 +33,7 @@ try {
   process.exit(1);
 }
 
-// 2. 执行 npm 发布
+// 2. Execute npm publish
 if (isDryRun) {
   console.log(`\n🧪 [DRY RUN MODE] Simulating npm publish for ${pkgJson.name}@${pkgJson.version}...`);
   execSync('npm publish --access public --registry=https://registry.npmjs.org/ --dry-run', { stdio: 'inherit', cwd: PKG_DIR });
@@ -48,7 +48,7 @@ if (isDryRun) {
   } catch (err) {
     console.error('\n❌ npm publish failed.');
     if (err.message && err.message.includes('EOTP')) {
-      console.error('💡 提示：您的 npm 账号开启了双重身份验证 (2FA)，请带上验证码执行：pnpm release --otp=<6位动态验证码>');
+      console.error('💡 Hint: Two-Factor Authentication (2FA) is enabled on your npm account. Run with OTP: pnpm release --otp=<6-digit-otp>');
     }
     process.exit(1);
   }

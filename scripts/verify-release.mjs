@@ -26,7 +26,7 @@ const files = tarballInfo.files.map(f => f.path);
 console.log(`\n📋 Tarball files to be published (${files.length} files, unpacked size: ${(tarballInfo.size / 1024).toFixed(2)} KB):`);
 files.forEach(f => console.log(`   ✓ ${f}`));
 
-// 严格安全审计：禁止任何源码直接泄露、测试、配置文件或私密文件进入发布包体
+// Strict security audit: forbid uncompiled source code, tests, configs, or sensitive files from leaking into the published package
 const FORBIDDEN_PATTERNS = [
   /^src\//i,
   /^test\//i,

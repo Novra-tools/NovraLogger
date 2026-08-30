@@ -1,4 +1,4 @@
-﻿import { appendFileSync } from 'node:fs';
+import { appendFileSync } from 'node:fs';
 import { dirname } from 'node:path';
 import type {
   CleanLogsOptions,
@@ -18,7 +18,7 @@ import { PathResolver } from './path-resolver';
 import { FileRotator } from './rotator';
 import { LogSanitizer } from './sanitizer';
 
-/** 日志级别优先级权重 */
+/** Log level priority weights */
 const LEVEL_WEIGHTS: Record<LogLevel, number> = {
   debug: 10,
   info: 20,
@@ -28,14 +28,14 @@ const LEVEL_WEIGHTS: Record<LogLevel, number> = {
 };
 
 /**
- * 将数字补零对齐为固定长度字符串
+ * Pad a number with leading zeros to a fixed length string
  */
 function pad(num: number, length = 2): string {
   return String(num).padStart(length, '0');
 }
 
 /**
- * 格式化本地高精度时间戳：YYYY/MM/DD HH:mm:ss.SSS
+ * Format local high-precision timestamp: YYYY/MM/DD HH:mm:ss.SSS
  */
 export function formatLocalTimestamp(date: Date = new Date()): string {
   const dateStr = [
@@ -54,7 +54,7 @@ export function formatLocalTimestamp(date: Date = new Date()): string {
 }
 
 /**
- * 核心 Logger 引擎类（纯 Node.js 实现，零宿主外壳耦合）
+ * Core Logger engine class (pure Node.js implementation, zero host shell coupling)
  */
 export class Logger implements ILogger {
   private config: Required<LoggerConfig>;
@@ -92,7 +92,7 @@ export class Logger implements ILogger {
   }
 
   /**
-   * 默认日志行格式化器
+   * Default log line formatter
    */
   private defaultFormatter(entry: LogEntry): string {
     const scopeParts: string[] = [];
@@ -119,14 +119,14 @@ export class Logger implements ILogger {
   }
 
   /**
-   * 判断指定日志级别是否达到当前配置的输出阈值
+   * Check if the specified log level meets the configured output threshold
    */
   public isLevelEnabled(level: LogLevel): boolean {
     return LEVEL_WEIGHTS[level] >= LEVEL_WEIGHTS[this.config.level];
   }
 
   /**
-   * 统一写入一条日志到物理文件，并按需输出至控制台
+   * Write a log entry to disk and optionally mirror to console
    */
   public write(rawEntry: Partial<LogEntry> & { level: LogLevel; message: string }): void {
     if (!this.isLevelEnabled(rawEntry.level)) {
@@ -148,19 +148,19 @@ export class Logger implements ILogger {
       windowId: rawEntry.windowId,
     };
 
-    // 1. 确定物理目标文件路径（用户专属日志 vs 全局应用日志）
+    // 1. Determine physical target file path (user-scoped log vs main app log)
     const targetFilePath = entry.userId
       ? this.pathResolver.getUserLogFilePath(entry.userId, 'user.log')
       : this.pathResolver.getMainLogFilePath();
 
     this.pathResolver.ensureDir(dirname(targetFilePath));
 
-    // 2. 检查并执行日志文件轮转（写入节流防频繁 stat）
+    // 2. Check and perform log file rotation (throttled to avoid frequent stat checks)
     if (this.rotator.shouldCheck(targetFilePath)) {
       this.rotator.rotate(targetFilePath);
     }
 
-    // 3. 格式化日志行并追加写入磁盘
+    // 3. Format log line and append to disk
     const logLine = this.config.formatter(entry);
     try {
       appendFileSync(targetFilePath, `${logLine}\n`, 'utf8');
@@ -168,7 +168,7 @@ export class Logger implements ILogger {
       console.warn(`[@novra/logger] Failed to write log to ${targetFilePath}:`, err);
     }
 
-    // 4. 同步输出至标准控制台（受配置控制）
+    // 4. Mirror output to standard console if enabled
     if (this.config.enableConsole) {
       const consoleArgs = [logLine];
       switch (entry.level) {
@@ -190,7 +190,7 @@ export class Logger implements ILogger {
   }
 
   /**
-   * 内部处理多重重载签名的日志记录调度函数
+   * Internal dispatcher handling multiple overloaded method signatures
    */
   private logInternal(
     level: LogLevel,
@@ -245,7 +245,7 @@ export class Logger implements ILogger {
   }
 
   /**
-   * 创建一个具有固定模块名和方法名的作用域子 Logger
+   * Create a scoped child logger with fixed module and method names
    */
   public scope(moduleName: string, methodName?: string): IScopedLogger {
     return {
@@ -263,42 +263,42 @@ export class Logger implements ILogger {
   }
 
   /**
-   * 将当前日志目录（或指定用户日志目录）打包为 zip 文件供反馈上传
+   * Package current logs (or specified user logs) into a ZIP file for diagnostics
    */
   public async packLogs(options: PackLogsOptions = {}): Promise<PackLogsResult> {
     return this.packer.pack(options);
   }
 
   /**
-   * 清理日志文件（支持按用户、按天数或全量清理）
+   * Clean log files (by user, retention days, or all logs)
    */
   public async cleanLogs(options: CleanLogsOptions = {}): Promise<CleanLogsResult> {
     return this.cleaner.clean(options);
   }
 
   /**
-   * 一键清理本地日志（cleanLogs 的语义别名）
+   * Convenient alias for cleanLogs
    */
   public async clearLogs(options: CleanLogsOptions = {}): Promise<CleanLogsResult> {
     return this.cleaner.clean(options);
   }
 
   /**
-   * 一键彻底清空本地所有日志、所有用户隔离日志及历史归档文件
+   * Thoroughly wipe all local logs, user-isolated logs, and historical archives
    */
   public async clearAllLogs(): Promise<CleanLogsResult> {
     return this.cleaner.clearAll();
   }
 
   /**
-   * 获取当前配置的根日志目录
+   * Get the configured root log directory
    */
   public getLogDir(): string {
     return this.pathResolver.getBaseLogDir();
   }
 
   /**
-   * 获取指定用户的专属日志目录
+   * Get the dedicated log directory for a specific user
    */
   public getUserLogDir(userId?: string): string {
     return this.pathResolver.getUserLogDir(userId);
@@ -306,8 +306,9 @@ export class Logger implements ILogger {
 }
 
 /**
- * 工厂函数：创建并返回一个全新的 Logger 实例
+ * Factory function: create and return a new Logger instance
  */
 export function createLogger(config?: LoggerConfig): Logger {
   return new Logger(config);
 }
+

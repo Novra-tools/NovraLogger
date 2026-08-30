@@ -1,4 +1,4 @@
-﻿import type {
+import type {
   IScopedLogger,
   LogLevel,
   LogOptions,
@@ -7,7 +7,7 @@
   SerializedError,
 } from './types';
 
-/** 日志级别优先级权重 */
+/** Log level priority weights */
 const LEVEL_WEIGHTS: Record<LogLevel, number> = {
   debug: 10,
   info: 20,
@@ -17,7 +17,7 @@ const LEVEL_WEIGHTS: Record<LogLevel, number> = {
 };
 
 /**
- * 序列化 Error 对象为普通结构体，便于跨进程 IPC 传输
+ * Serialize Error object into a plain struct for safe cross-process IPC transmission
  */
 function serializeError(error: unknown): SerializedError | undefined {
   if (!error) return undefined;
@@ -31,7 +31,7 @@ function serializeError(error: unknown): SerializedError | undefined {
 }
 
 /**
- * 深度清洗并纯化对象，切断循环引用并剔除不可 IPC 克隆的 Function，防止进程间通信抛出 DataCloneError
+ * Deep clean and clone objects, breaking circular references and removing non-cloneable functions to avoid DataCloneError
  */
 function safeJsonClone(val: unknown): unknown {
   if (val === undefined || val === null) return undefined;
@@ -57,7 +57,7 @@ function safeJsonClone(val: unknown): unknown {
 }
 
 /**
- * 跨端/前端通用的渲染进程 Logger（纯 JS，无任何 Node 原生模块依赖）
+ * Universal cross-platform/frontend Renderer process Logger (pure JS, zero Node native module dependencies)
  */
 export class RendererLogger implements IScopedLogger {
   private options: RendererLoggerOptions;
@@ -76,7 +76,7 @@ export class RendererLogger implements IScopedLogger {
   }
 
   /**
-   * 写入并派发一条日志载荷到宿主/主进程
+   * Write and dispatch a log payload to the host/main process
    */
   private logInternal(
     level: LogLevel,
@@ -123,14 +123,14 @@ export class RendererLogger implements IScopedLogger {
       createdAt: Date.now(),
     };
 
-    // 1. 通过宿主注入的 send 函数派发至主进程落盘
+    // 1. Dispatch to main process disk storage via host-injected send function
     try {
       this.options.send(payload);
     } catch (err) {
       console.warn('[@novra/logger/renderer] Failed to send log payload:', err);
     }
 
-    // 2. 生产环境下的自定义错误上报（如 Sentry）
+    // 2. Custom error reporting in production (e.g. Sentry)
     if (level === 'error' || level === 'fatal') {
       if (this.options.onErrorCapture) {
         try {
@@ -139,7 +139,7 @@ export class RendererLogger implements IScopedLogger {
       }
     }
 
-    // 3. 开发环境下的控制台打印
+    // 3. Mirror to console in development
     const enableConsole = this.options.enableConsole ?? !isProd;
     if (enableConsole) {
       const prefix = `[${finalModule}${finalMethod ? `:${finalMethod}` : ''}]`;
@@ -185,7 +185,7 @@ export class RendererLogger implements IScopedLogger {
   }
 
   /**
-   * 创建作用域子 Logger
+   * Create a scoped child logger
    */
   public scope(moduleName: string, methodName?: string): IScopedLogger {
     return {
@@ -204,7 +204,7 @@ export class RendererLogger implements IScopedLogger {
 }
 
 /**
- * 工厂函数：创建渲染进程 Logger
+ * Factory function: create a renderer process Logger
  */
 export function createRendererLogger(options: RendererLoggerOptions): RendererLogger {
   return new RendererLogger(options);

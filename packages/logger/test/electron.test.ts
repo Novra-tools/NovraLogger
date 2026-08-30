@@ -1,4 +1,4 @@
-﻿import { existsSync, mkdirSync, readFileSync, rmSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync, rmSync } from 'node:fs';
 import { join } from 'node:path';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { createLogger } from '../src/core/logger';
@@ -67,7 +67,7 @@ describe('Electron Adapter', () => {
     expect(channels['novra:log-pack']).toBeDefined();
     expect(channels['novra:log-clean']).toBeDefined();
 
-    // 触发 write 测试
+    // Trigger write test
     await channels['novra:log-write']({}, {
       level: 'warn',
       module: 'IpcTest',

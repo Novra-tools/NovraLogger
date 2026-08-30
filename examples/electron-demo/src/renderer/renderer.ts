@@ -1,4 +1,4 @@
-﻿import { createRendererLogger } from 'novra-logger/renderer';
+import { createRendererLogger } from 'novra-logger/renderer';
 
 declare global {
   interface Window {
@@ -18,7 +18,7 @@ declare global {
 
 let currentUserId: string | undefined = undefined;
 
-// 初始化渲染进程 Logger
+// Initialize Renderer Process Logger
 const rendererLogger = createRendererLogger({
   send: (payload) => window.novraLog.write(payload),
   getUserId: () => currentUserId,
@@ -44,13 +44,13 @@ async function refreshLiveLogs() {
   }
 }
 
-// 监听用户切换
+// Handle active user switching
 userSelect.addEventListener('change', () => {
   currentUserId = userSelect.value || undefined;
   refreshLiveLogs();
 });
 
-// 1. 主进程日志触发按钮
+// 1. Main Process Log Buttons
 document.getElementById('btnMainInfo')?.addEventListener('click', async () => {
   await window.novraLog.triggerMainLog('info', 'Main service cycle finished', { load: '0.12' });
   setTimeout(refreshLiveLogs, 50);
@@ -76,7 +76,7 @@ document.getElementById('btnMainMask')?.addEventListener('click', async () => {
   setTimeout(refreshLiveLogs, 50);
 });
 
-// 2. 渲染进程日志触发按钮
+// 2. Renderer Process Log Buttons
 document.getElementById('btnRenderInfo')?.addEventListener('click', () => {
   const uiLogger = rendererLogger.scope('ChatView', 'click');
   uiLogger.info('User clicked send message button', { inputLength: 32, timestamp: Date.now() });
@@ -107,7 +107,7 @@ document.getElementById('btnRenderMask')?.addEventListener('click', () => {
   setTimeout(refreshLiveLogs, 50);
 });
 
-// 3. 打包与诊断
+// 3. Packaging & Diagnostics
 document.getElementById('btnPackLogs')?.addEventListener('click', async () => {
   packResultBox.style.display = 'block';
   packResultBox.textContent = 'Compressing logs...';
@@ -141,7 +141,7 @@ document.getElementById('btnOpenFolder')?.addEventListener('click', () => {
   window.novraLog.openLogDir(currentUserId);
 });
 
-// 清理当前用户日志
+// Clear current user logs
 document.getElementById('btnClearUserLogs')?.addEventListener('click', async () => {
   const res = await window.novraLog.cleanLogs({ userId: currentUserId });
   packResultBox.style.display = 'block';
@@ -149,7 +149,7 @@ document.getElementById('btnClearUserLogs')?.addEventListener('click', async () 
   setTimeout(refreshLiveLogs, 100);
 });
 
-// 一键清空全部日志
+// Wipe all local logs
 document.getElementById('btnClearAllLogs')?.addEventListener('click', async () => {
   const res = await window.novraLog.clearAllLogs();
   packResultBox.style.display = 'block';
@@ -161,6 +161,6 @@ document.getElementById('btnRefreshLogs')?.addEventListener('click', () => {
   refreshLiveLogs();
 });
 
-// 初始化加载
+// Initial load
 refreshLiveLogs();
 setInterval(refreshLiveLogs, 3000);

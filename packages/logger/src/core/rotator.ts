@@ -1,4 +1,4 @@
-﻿import {
+import {
   existsSync,
   readdirSync,
   renameSync,
@@ -8,7 +8,7 @@
 import { basename, dirname, join } from 'node:path';
 
 /**
- * 日志文件级联轮转器与大小控制器
+ * Cascade log file rotator and file size controller
  */
 export class FileRotator {
   private maxFileSize: number;
@@ -17,9 +17,9 @@ export class FileRotator {
   private writeCounters: Map<string, number> = new Map();
 
   constructor(
-    maxFileSize = 10 * 1024 * 1024, // 默认 10MB
-    maxFiles = 3,                   // 默认保留 3 份 (当前 + 2 历史轮转)
-    checkInterval = 50              // 默认每写入 50 次检测一次大小
+    maxFileSize = 10 * 1024 * 1024, // Default 10MB
+    maxFiles = 3,                   // Default 3 files (active + 2 rotated)
+    checkInterval = 50              // Default check size every 50 writes
   ) {
     this.maxFileSize = maxFileSize;
     this.maxFiles = Math.max(1, maxFiles);
@@ -27,7 +27,7 @@ export class FileRotator {
   }
 
   /**
-   * 写入节流计数判定，降低每次写文件都进行 `statSync` 的系统 I/O 损耗
+   * Write throttling check to reduce system I/O overhead from calling statSync on every write
    */
   public shouldCheck(filePath: string): boolean {
     const current = (this.writeCounters.get(filePath) ?? 0) + 1;
@@ -36,14 +36,14 @@ export class FileRotator {
   }
 
   /**
-   * 检查指定日志文件，若超出大小阈值则执行级联轮转
+   * Check target log file and trigger cascade rotation if file size exceeds threshold
    * 
-   * 示例（当 maxFiles = 3 时）：
-   * 1. 检查 app.log 达到 10MB；
-   * 2. 删除最旧的 app.2.log（若存在）；
-   * 3. 将现有的 app.1.log 重命名为 app.2.log；
-   * 4. 将当前 app.log 重命名为 app.1.log；
-   * 5. 原路径释放，供下次写入生成全新的空 app.log。
+   * Example (when maxFiles = 3):
+   * 1. app.log reaches 10MB;
+   * 2. Delete oldest app.2.log (if exists);
+   * 3. Rename existing app.1.log -> app.2.log;
+   * 4. Rename current app.log -> app.1.log;
+   * 5. Original path is cleared for next append to create a fresh empty app.log.
    */
   public rotate(filePath: string): boolean {
     try {
@@ -56,7 +56,7 @@ export class FileRotator {
         return false;
       }
 
-      // 如果只允许保留 1 个文件，直接清空或删除当前文件
+      // If maxFiles is 1, simply remove the current file
       if (this.maxFiles <= 1) {
         unlinkSync(filePath);
         return true;
@@ -64,16 +64,16 @@ export class FileRotator {
 
       const dir = dirname(filePath);
       const fileName = basename(filePath);
-      // 提取去除 .log 后缀的基础名（例如 app）
+      // Extract base name without .log extension (e.g. app)
       const baseWithoutExt = filePath.replace(/\.log$/, '');
       const maxRotationIndex = this.maxFiles - 1;
 
-      // 级联向前推移历史归档文件
+      // Cascade shift historical files forward
       for (let i = maxRotationIndex; i >= 1; i--) {
         const currentPath = `${baseWithoutExt}.${i}.log`;
 
         if (i === maxRotationIndex) {
-          // 最旧的一份轮转文件直接移除，为前一个文件腾出位置
+          // Remove the oldest file to make room
           if (existsSync(currentPath)) {
             try {
               unlinkSync(currentPath);
@@ -82,7 +82,7 @@ export class FileRotator {
             }
           }
         } else {
-          // 将 .i.log 移动为 .(i+1).log
+          // Rename .i.log -> .(i+1).log
           const nextPath = `${baseWithoutExt}.${i + 1}.log`;
           if (existsSync(currentPath)) {
             if (existsSync(nextPath)) {
@@ -99,7 +99,7 @@ export class FileRotator {
         }
       }
 
-      // 将当前文件重命名为第一份历史轮转文件 .1.log
+      // Rename current file to .1.log
       const firstRotatedPath = `${baseWithoutExt}.1.log`;
       if (existsSync(firstRotatedPath)) {
         try {
@@ -108,7 +108,7 @@ export class FileRotator {
       }
       renameSync(filePath, firstRotatedPath);
 
-      // 清理可能由于外部非正常变更遗留的多余历史日志
+      // Clean any leftover excessive log files
       this.cleanExcessiveLogFiles(dir, fileName.replace(/\.log$/, ''));
       return true;
     } catch (error) {
@@ -118,7 +118,7 @@ export class FileRotator {
   }
 
   /**
-   * 清扫指定目录下多余的历史日志文件，确保总数量不超过 maxFiles
+   * Clean excessive log files in directory to ensure total count does not exceed maxFiles
    */
   public cleanExcessiveLogFiles(logDir: string, basePrefix: string): void {
     try {
@@ -138,7 +138,7 @@ export class FileRotator {
         .filter((item): item is { name: string; path: string; mtime: number } => item !== null);
 
       if (matchedFiles.length > this.maxFiles) {
-        // 按修改时间降序排序（最新的在前，最旧的在后）
+        // Sort by modified time descending (newest first, oldest last)
         matchedFiles.sort((a, b) => b.mtime - a.mtime);
         const toDelete = matchedFiles.slice(this.maxFiles);
 

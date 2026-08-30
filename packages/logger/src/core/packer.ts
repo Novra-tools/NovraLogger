@@ -1,4 +1,4 @@
-﻿import {
+import {
   existsSync,
   mkdirSync,
   readdirSync,
@@ -13,7 +13,7 @@ import type { PackLogsOptions, PackLogsResult } from '../types';
 import { PathResolver } from './path-resolver';
 
 /**
- * 纯 JS 日志打包与压缩导出器（无 native 编译依赖）
+ * Pure JS log packaging and compression exporter (zero native compile dependencies)
  */
 export class LogPacker {
   private pathResolver: PathResolver;
@@ -23,7 +23,7 @@ export class LogPacker {
   }
 
   /**
-   * 递归扫描指定目录下的所有待打包文件
+   * Recursively scan for all candidate log files under a directory
    */
   private scanDirectory(
     dir: string,
@@ -37,7 +37,7 @@ export class LogPacker {
       for (const entry of entries) {
         const fullPath = join(currentDir, entry.name);
         if (entry.isDirectory()) {
-          // 跳过 diagnostics/temp 自身，避免将之前的压缩包无限递归打包
+          // Skip diagnostics/temp folders to prevent recursive self-packaging
           if (entry.name === 'diagnostics' || entry.name === 'temp') {
             continue;
           }
@@ -55,7 +55,7 @@ export class LogPacker {
   }
 
   /**
-   * 自动清理历史遗留的临时诊断 zip 文件，最多保留指定数量
+   * Purge older temporary diagnostic zip files, keeping up to maxCount
    */
   private cleanPendingZips(diagnosticsDir: string, maxCount: number): void {
     try {
@@ -90,7 +90,7 @@ export class LogPacker {
   }
 
   /**
-   * 将日志目录与诊断信息打包为 `.zip` 文件
+   * Package log directory and diagnostic metadata into a `.zip` archive
    */
   public async pack(options: PackLogsOptions = {}): Promise<PackLogsResult> {
     const sourceDir = options.sourceDir
@@ -109,7 +109,7 @@ export class LogPacker {
 
     mkdirSync(dirname(finalZipPath), { recursive: true });
 
-    // 扫描匹配的所有文件
+    // Scan matching files
     const filePaths = this.scanDirectory(sourceDir, options.filter);
     const zipData: Zippable = {};
 
@@ -125,7 +125,7 @@ export class LogPacker {
       }
     }
 
-    // 若传入额外 metadata，则在 zip 根目录自动生成 metadata.json
+    // Automatically generate metadata.json in the zip root if metadata is provided
     if (options.metadata) {
       const metaObject = {
         packagedAt: new Date().toISOString(),
@@ -139,11 +139,11 @@ export class LogPacker {
       fileCount++;
     }
 
-    // 执行纯 JS 高性能压缩
+    // Execute pure JS high-performance compression
     const compressedBuffer = zipSync(zipData, { level: 6 });
     writeFileSync(finalZipPath, Buffer.from(compressedBuffer));
 
-    // 清理多余的历史临时 zip 导出包
+    // Clean up excessive older diagnostic zips
     const maxPending = options.maxPendingZips ?? 3;
     this.cleanPendingZips(diagnosticsDir, maxPending);
 

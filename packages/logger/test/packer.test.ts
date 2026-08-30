@@ -1,4 +1,4 @@
-﻿import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { unzipSync } from 'fflate';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
@@ -33,7 +33,7 @@ describe('LogPacker', () => {
     expect(result.fileCount).toBeGreaterThan(0);
     expect(result.size).toBeGreaterThan(0);
 
-    // 解压验证内容
+    // Unpack and verify contents
     const zipBytes = readFileSync(result.zipPath);
     const unzipped = unzipSync(new Uint8Array(zipBytes));
 

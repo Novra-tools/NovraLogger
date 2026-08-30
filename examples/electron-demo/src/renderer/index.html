@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -20,7 +20,7 @@
     </header>
 
     <main class="grid-layout">
-      <!-- 1. 主进程日志测试 -->
+      <!-- 1. Main Process Logger Demo -->
       <section class="card">
         <h2>🖥️ Main Process Logger</h2>
         <p class="card-desc">Emits logs directly inside the Electron Main Process via <code>logger.scope()</code>.</p>
@@ -32,7 +32,7 @@
         </div>
       </section>
 
-      <!-- 2. 渲染进程日志测试 -->
+      <!-- 2. Renderer Process Logger Demo -->
       <section class="card">
         <h2>🌐 Renderer Process Logger</h2>
         <p class="card-desc">Powered by <code>@novra/logger/renderer</code>. Transmits logs over Preload IPC with auto sanitization.</p>
@@ -54,7 +54,7 @@
         </div>
       </section>
 
-      <!-- 3. 日志打包与一键清理服务 -->
+      <!-- 3. Diagnostics & One-Click Cleanup Services -->
       <section class="card full-width">
         <h2>📦 Diagnostic & One-Click Cleanup</h2>
         <p class="card-desc">One-click ZIP packaging for user bug feedback, folder exploration, and one-click log wipe.</p>
@@ -68,7 +68,7 @@
         <div id="packResult" class="pack-result-box" style="display: none;"></div>
       </section>
 
-      <!-- 4. 实时日志预览窗口 -->
+      <!-- 4. Live Log Feed Window -->
       <section class="card full-width log-viewer-card">
         <div class="viewer-header">
           <h2>📜 Live Log Feed (Tail 50 Lines)</h2>

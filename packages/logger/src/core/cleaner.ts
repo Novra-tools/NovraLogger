@@ -1,11 +1,11 @@
-﻿import { existsSync, readdirSync, rmSync, statSync, unlinkSync } from 'node:fs';
+import { existsSync, readdirSync, rmSync, statSync, unlinkSync } from 'node:fs';
 import { join } from 'node:path';
 import type { CleanLogsOptions, CleanLogsResult } from '../types';
 import { PathResolver } from './path-resolver';
 
-/** 单个文件删除最大重试次数 */
+/** Maximum delete retry attempts for a single file */
 const MAX_DELETE_RETRIES = 3;
-/** 重试间隔（毫秒），应对 Windows 平台下文件句柄暂未释放的问题 */
+/** Retry delay in milliseconds to handle unreleased file locks on Windows */
 const RETRY_DELAY_MS = 200;
 
 function sleep(ms: number): Promise<void> {
@@ -13,7 +13,7 @@ function sleep(ms: number): Promise<void> {
 }
 
 /**
- * 安全删除单个文件，包含重试机制
+ * Safely delete a single file with retry mechanism
  */
 async function safeDeleteFile(filePath: string): Promise<boolean> {
   for (let attempt = 0; attempt < MAX_DELETE_RETRIES; attempt++) {
@@ -31,7 +31,7 @@ async function safeDeleteFile(filePath: string): Promise<boolean> {
 }
 
 /**
- * 历史日志与崩溃转储文件清理器
+ * Historical log and crash dump file cleaner
  */
 export class LogCleaner {
   private pathResolver: PathResolver;
@@ -41,7 +41,7 @@ export class LogCleaner {
   }
 
   /**
-   * 递归检索目录下的所有日志或待清理文件
+   * Recursively retrieve all log or target files under a directory
    */
   private getTargetFiles(dir: string, extensions = ['.log', '.zip']): Array<{ path: string; mtime: number }> {
     if (!existsSync(dir)) return [];
@@ -71,7 +71,7 @@ export class LogCleaner {
   }
 
   /**
-   * 检索并保留指定数量的最新 .dmp 崩溃转储文件
+   * Retrieve and retain a specified number of recent .dmp crash dump files
    */
   private async cleanCrashDumps(
     crashDumpsDir: string,
@@ -98,7 +98,7 @@ export class LogCleaner {
 
     walk(crashDumpsDir);
 
-    // 按修改时间降序排序
+    // Sort by modified time descending (newest first)
     dumpFiles.sort((a, b) => b.mtime - a.mtime);
     const expiredDumps = dumpFiles.slice(retainCount);
 
@@ -114,16 +114,16 @@ export class LogCleaner {
   }
 
   /**
-   * 执行日志及历史文件清理
+   * Perform log and historical file cleanup
    */
   public async clean(options: CleanLogsOptions = {}): Promise<CleanLogsResult> {
     let deletedCount = 0;
     let failedCount = 0;
 
-    // 1. 确定需要清理的目标目录列表
+    // 1. Determine target directories to clean
     const targetDirs: string[] = [];
     if (options.clearAll) {
-      // 全量一键清理：包含基础根目录下的所有子目录
+      // Full wipe: include all subdirectories under the base log directory
       targetDirs.push(this.pathResolver.getBaseLogDir());
     } else if (options.logDir) {
       targetDirs.push(options.logDir);
@@ -136,12 +136,12 @@ export class LogCleaner {
     const now = Date.now();
     const maxAgeMs = options.maxAgeDays ? options.maxAgeDays * 24 * 60 * 60 * 1000 : undefined;
 
-    // 2. 遍历扫描并删除目标日志/压缩包文件
+    // 2. Scan and remove target log / archive files
     for (const dir of targetDirs) {
       const files = this.getTargetFiles(dir, options.clearAll ? ['.log', '.zip'] : ['.log']);
       for (const file of files) {
         if (maxAgeMs !== undefined && now - file.mtime < maxAgeMs) {
-          // 未超过最大保留天数，跳过
+          // File has not exceeded retention age, skip
           continue;
         }
 
@@ -151,7 +151,7 @@ export class LogCleaner {
       }
     }
 
-    // 3. 若配置了崩溃转储目录，清理多余的 .dmp
+    // 3. Clean excess crash dumps if directory is specified
     if (options.crashDumpsDir) {
       const retain = options.retainCrashDumps ?? 2;
       const dumpResult = await this.cleanCrashDumps(options.crashDumpsDir, retain);
@@ -163,7 +163,7 @@ export class LogCleaner {
   }
 
   /**
-   * 一键清空全部日志
+   * One-click wipe of all logs
    */
   public async clearAll(): Promise<CleanLogsResult> {
     return this.clean({ clearAll: true });

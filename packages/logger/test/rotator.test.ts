@@ -1,4 +1,4 @@
-﻿import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { FileRotator } from '../src/core/rotator';
@@ -30,14 +30,14 @@ describe('FileRotator', () => {
     // maxFileSize = 10 bytes, maxFiles = 3 (app.log, app.1.log, app.2.log)
     const rotator = new FileRotator(10, 3, 1);
 
-    // 第一次超出
+    // First overflow
     writeFileSync(logFile, 'First content that is very long');
     rotator.rotate(logFile);
 
     expect(existsSync(join(tempDir, 'app.1.log'))).toBe(true);
     expect(readFileSync(join(tempDir, 'app.1.log'), 'utf8')).toBe('First content that is very long');
 
-    // 第二次超出
+    // Second overflow
     writeFileSync(logFile, 'Second content that is also long');
     rotator.rotate(logFile);
 
@@ -46,7 +46,7 @@ describe('FileRotator', () => {
     expect(readFileSync(join(tempDir, 'app.1.log'), 'utf8')).toBe('Second content that is also long');
     expect(readFileSync(join(tempDir, 'app.2.log'), 'utf8')).toBe('First content that is very long');
 
-    // 第三次超出（app.2.log 应当被剔除，滚动为新的 app.2.log）
+    // Third overflow (app.2.log should be purged, replaced by new app.2.log)
     writeFileSync(logFile, 'Third content long');
     rotator.rotate(logFile);
 

@@ -1,4 +1,4 @@
-﻿import { existsSync, mkdirSync, readFileSync, rmSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync, rmSync } from 'node:fs';
 import { join } from 'node:path';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { createLogger } from '../src/core/logger';
@@ -56,7 +56,7 @@ describe('Logger Core', () => {
     const logger = createLogger({
       appName: 'my-app',
       logDir: tempDir,
-      level: 'warn', // 只记录 warn/error/fatal
+      level: 'warn', // Only record warn/error/fatal
       enableConsole: false,
     });
 

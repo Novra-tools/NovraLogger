@@ -1,4 +1,4 @@
-﻿import { app, BrowserWindow, ipcMain, shell } from 'electron';
+import { app, BrowserWindow, ipcMain, shell } from 'electron';
 import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import {
@@ -9,7 +9,7 @@ import {
 
 let mainWindow: BrowserWindow | null = null;
 
-// 1. 初始化主进程 novra-logger
+// 1. Initialize main process novra-logger
 const logger = createLogger({
   appName: 'novra-electron-demo',
   logDir: join(app.getPath('userData'), 'logs'),
@@ -48,10 +48,10 @@ function createWindow() {
   });
 }
 
-// 2. 注册标准 novra-logger IPC
+// 2. Register standard novra-logger IPC
 registerElectronIpc(logger, ipcMain);
 
-// 3. 注册 Demo 辅助交互 IPC
+// 3. Register Demo interactive helper IPC
 ipcMain.handle('demo:main-log', async (_event, payload: { level: LogLevel; message: string; data?: unknown }) => {
   const scope = logger.scope('MainService', 'demoTask');
   switch (payload.level) {
@@ -100,7 +100,7 @@ ipcMain.handle('demo:read-recent-logs', async (_event, userId?: string) => {
 
     const content = readFileSync(targetFilePath, 'utf8');
     const lines = content.trim().split('\n');
-    // 返回最近 50 行
+    // Return the most recent 50 lines
     return lines.slice(-50).join('\n');
   } catch (err) {
     return `Error reading log file: ${String(err)}`;
