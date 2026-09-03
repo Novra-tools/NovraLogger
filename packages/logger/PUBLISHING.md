@@ -6,7 +6,7 @@
 
 ## 1. Package Identity & Metadata
 
-- **Package Name**: `novra-logger`
+- **Package Name**: `desklog`
 - **Official Registry**: `https://registry.npmjs.org/`
 - **Access Level**: `public`
 - **Repository**: `https://github.com/Novra-tools/NovraLogger.git`

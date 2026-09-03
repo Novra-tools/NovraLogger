@@ -109,7 +109,7 @@ export interface ILogger extends IScopedLogger {
 export interface PackLogsOptions {
   /** Source directory to pack. Defaults to the Logger instance's root log directory */
   sourceDir?: string;
-  /** Target absolute output path or file name. Defaults to `<logDir>/diagnostics/novra-logs-<timestamp>.zip` */
+  /** Target absolute output path or file name. Defaults to `<logDir>/diagnostics/desklog-<timestamp>.zip` */
   outputZipPath?: string;
   /** If specified, packs only logs belonging to this user */
   userId?: string;

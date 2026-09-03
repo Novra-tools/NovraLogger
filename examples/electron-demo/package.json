@@ -1,8 +1,8 @@
-﻿{
+{
   "name": "electron-demo",
   "version": "1.0.0",
   "private": true,
-  "description": "Interactive demonstration for novra-logger in Electron",
+  "description": "Interactive demonstration for desklog in Electron",
   "main": "./dist/main.js",
   "scripts": {
     "build": "tsup",
@@ -11,7 +11,7 @@
     "clean": "rimraf dist"
   },
   "dependencies": {
-    "novra-logger": "workspace:*"
+    "desklog": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^22.13.5",

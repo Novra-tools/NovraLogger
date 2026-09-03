@@ -1,26 +1,30 @@
-import { createRendererLogger } from 'novra-logger/renderer';
+import { createRendererLogger } from 'desklog/renderer';
+
+interface DesklogApi {
+  write: (payload: unknown) => Promise<void>;
+  getLogDir: (userId?: string) => Promise<string>;
+  packLogs: (options?: unknown) => Promise<{ zipPath: string; size: number; fileCount: number }>;
+  cleanLogs: (options?: unknown) => Promise<{ deletedCount: number; failedCount: number }>;
+  clearAllLogs: () => Promise<{ deletedCount: number; failedCount: number }>;
+  triggerMainLog: (level: string, message: string, data?: unknown) => Promise<void>;
+  openLogDir: (userId?: string) => Promise<string>;
+  readRecentLogs: (userId?: string) => Promise<string>;
+  showItemInFolder: (filePath: string) => Promise<boolean>;
+}
 
 declare global {
   interface Window {
-    novraLog: {
-      write: (payload: unknown) => Promise<void>;
-      getLogDir: (userId?: string) => Promise<string>;
-      packLogs: (options?: unknown) => Promise<{ zipPath: string; size: number; fileCount: number }>;
-      cleanLogs: (options?: unknown) => Promise<{ deletedCount: number; failedCount: number }>;
-      clearAllLogs: () => Promise<{ deletedCount: number; failedCount: number }>;
-      triggerMainLog: (level: string, message: string, data?: unknown) => Promise<void>;
-      openLogDir: (userId?: string) => Promise<string>;
-      readRecentLogs: (userId?: string) => Promise<string>;
-      showItemInFolder: (filePath: string) => Promise<boolean>;
-    };
+    desklog: DesklogApi;
+    novraLog?: DesklogApi;
   }
 }
 
+const api = window.desklog || window.novraLog;
 let currentUserId: string | undefined = undefined;
 
 // Initialize Renderer Process Logger
 const rendererLogger = createRendererLogger({
-  send: (payload) => window.novraLog.write(payload),
+  send: (payload) => api.write(payload),
   getUserId: () => currentUserId,
   defaultModule: 'DemoRenderer',
   enableConsole: true,
@@ -33,11 +37,11 @@ const packResultBox = document.getElementById('packResult') as HTMLDivElement;
 
 async function refreshLiveLogs() {
   try {
-    const content = await window.novraLog.readRecentLogs(currentUserId);
+    const content = await api.readRecentLogs(currentUserId);
     terminal.textContent = content;
     terminal.scrollTop = terminal.scrollHeight;
 
-    const logDir = await window.novraLog.getLogDir(currentUserId);
+    const logDir = await api.getLogDir(currentUserId);
     pathBadge.textContent = `📁 ${logDir}`;
   } catch (err) {
     terminal.textContent = `Error loading logs: ${String(err)}`;
@@ -52,22 +56,22 @@ userSelect.addEventListener('change', () => {
 
 // 1. Main Process Log Buttons
 document.getElementById('btnMainInfo')?.addEventListener('click', async () => {
-  await window.novraLog.triggerMainLog('info', 'Main service cycle finished', { load: '0.12' });
+  await api.triggerMainLog('info', 'Main service cycle finished', { load: '0.12' });
   setTimeout(refreshLiveLogs, 50);
 });
 
 document.getElementById('btnMainWarn')?.addEventListener('click', async () => {
-  await window.novraLog.triggerMainLog('warn', 'High memory consumption detected in background worker', { heapUsedMB: 480 });
+  await api.triggerMainLog('warn', 'High memory consumption detected in background worker', { heapUsedMB: 480 });
   setTimeout(refreshLiveLogs, 50);
 });
 
 document.getElementById('btnMainError')?.addEventListener('click', async () => {
-  await window.novraLog.triggerMainLog('error', 'Database worker connection timeout after 5000ms', { timeoutMs: 5000 });
+  await api.triggerMainLog('error', 'Database worker connection timeout after 5000ms', { timeoutMs: 5000 });
   setTimeout(refreshLiveLogs, 50);
 });
 
 document.getElementById('btnMainMask')?.addEventListener('click', async () => {
-  await window.novraLog.triggerMainLog('info', 'App configuration loaded with sensitive credentials', {
+  await api.triggerMainLog('info', 'App configuration loaded with sensitive credentials', {
     password: 'root_super_password_123',
     token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
     phone: '13800138000',
@@ -113,10 +117,10 @@ document.getElementById('btnPackLogs')?.addEventListener('click', async () => {
   packResultBox.textContent = 'Compressing logs...';
 
   try {
-    const result = await window.novraLog.packLogs({
+    const result = await api.packLogs({
       userId: currentUserId,
       metadata: {
-        appName: 'novra-electron-demo',
+        appName: 'desklog-electron-demo',
         userTriggered: true,
         clientTime: new Date().toISOString(),
       },
@@ -130,7 +134,7 @@ document.getElementById('btnPackLogs')?.addEventListener('click', async () => {
     `;
 
     document.getElementById('btnRevealZip')?.addEventListener('click', () => {
-      window.novraLog.showItemInFolder(result.zipPath);
+      api.showItemInFolder(result.zipPath);
     });
   } catch (err) {
     packResultBox.textContent = `Packaging failed: ${String(err)}`;
@@ -138,12 +142,12 @@ document.getElementById('btnPackLogs')?.addEventListener('click', async () => {
 });
 
 document.getElementById('btnOpenFolder')?.addEventListener('click', () => {
-  window.novraLog.openLogDir(currentUserId);
+  api.openLogDir(currentUserId);
 });
 
 // Clear current user logs
 document.getElementById('btnClearUserLogs')?.addEventListener('click', async () => {
-  const res = await window.novraLog.cleanLogs({ userId: currentUserId });
+  const res = await api.cleanLogs({ userId: currentUserId });
   packResultBox.style.display = 'block';
   packResultBox.textContent = `Cleaned ${res.deletedCount} log files for current context (${res.failedCount} failed).`;
   setTimeout(refreshLiveLogs, 100);
@@ -151,7 +155,7 @@ document.getElementById('btnClearUserLogs')?.addEventListener('click', async () 
 
 // Wipe all local logs
 document.getElementById('btnClearAllLogs')?.addEventListener('click', async () => {
-  const res = await window.novraLog.clearAllLogs();
+  const res = await api.clearAllLogs();
   packResultBox.style.display = 'block';
   packResultBox.textContent = `💥 Wiped ALL ${res.deletedCount} local log files (${res.failedCount} failed).`;
   setTimeout(refreshLiveLogs, 100);

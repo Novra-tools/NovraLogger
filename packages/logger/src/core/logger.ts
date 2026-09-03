@@ -68,7 +68,7 @@ export class Logger implements ILogger {
     const isProd = process.env.NODE_ENV === 'production' || process.env.TYPE === 'production';
 
     this.config = {
-      appName: config.appName ?? 'novra-app',
+      appName: config.appName ?? 'desklog-app',
       logDir: config.logDir ?? '',
       level: config.level ?? (isProd ? 'info' : 'debug'),
       maxFileSize: config.maxFileSize ?? 10 * 1024 * 1024,
@@ -165,7 +165,7 @@ export class Logger implements ILogger {
     try {
       appendFileSync(targetFilePath, `${logLine}\n`, 'utf8');
     } catch (err) {
-      console.warn(`[@novra/logger] Failed to write log to ${targetFilePath}:`, err);
+      console.warn(`[desklog] Failed to write log to ${targetFilePath}:`, err);
     }
 
     // 4. Mirror output to standard console if enabled

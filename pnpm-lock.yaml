@@ -10,7 +10,7 @@ importers:
 
   examples/electron-demo:
     dependencies:
-      novra-logger:
+      desklog:
         specifier: workspace:*
         version: link:../../packages/logger
     devDependencies:

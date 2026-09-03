@@ -1,12 +1,12 @@
-﻿# novra-logger — Biblioteca universal de recolección y gestión de registros para Electron, Tauri y Node.js
+# desklog — Biblioteca universal de recolección y gestión de registros para Electron, Tauri y Node.js
 
-[![npm version](https://img.shields.io/npm/v/novra-logger?style=flat-square)](https://www.npmjs.com/package/novra-logger)
+[![npm version](https://img.shields.io/npm/v/desklog?style=flat-square)](https://www.npmjs.com/package/desklog)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](https://github.com/Novra-tools/NovraLogger/blob/main/LICENSE)
 [![X (Twitter)](https://img.shields.io/badge/X-@novratools-blue?style=flat-square&logo=x)](https://x.com/novratools)
 
 [English](https://github.com/Novra-tools/NovraLogger/blob/main/README.md) | [简体中文](https://github.com/Novra-tools/NovraLogger/blob/main/README.zh-CN.md) | [日本語](https://github.com/Novra-tools/NovraLogger/blob/main/README.ja.md) | [한국어](https://github.com/Novra-tools/NovraLogger/blob/main/README.ko.md) | [Español](https://github.com/Novra-tools/NovraLogger/blob/main/README.es.md)
 
-**novra-logger** es una biblioteca universal de recolección y gestión de registros diseñada específicamente para aplicaciones **Electron**, **Tauri** y **Node.js**. Proporciona una suite completa lista para usar: rotación de archivos en cascada, purga automática de registros vencidos al exceder el límite, control estricto del espacio en disco, enmascaramiento automático de datos confidenciales, aislamiento multiusuario, limpieza de registros locales en un clic y empaquetado ZIP en JavaScript puro para diagnósticos.
+**desklog** es una biblioteca universal de recolección y gestión de registros diseñada específicamente para aplicaciones **Electron**, **Tauri** y **Node.js**. Proporciona una suite completa lista para usar: rotación de archivos en cascada, purga automática de registros vencidos al exceder el límite, control estricto del espacio en disco, enmascaramiento automático de datos confidenciales, aislamiento multiusuario, limpieza de registros locales en un clic y empaquetado ZIP en JavaScript puro para diagnósticos.
 
 ---
 
@@ -31,9 +31,9 @@
 ## Instalación
 
 ```bash
-npm install novra-logger
+npm install desklog
 # o
-pnpm add novra-logger
+pnpm add desklog
 ```
 
 ---
@@ -41,7 +41,7 @@ pnpm add novra-logger
 ## Inicio rápido
 
 ```typescript
-import { createLogger } from 'novra-logger';
+import { createLogger } from 'desklog';
 
 const logger = createLogger({
   appName: 'mi-app',
@@ -84,3 +84,4 @@ console.log(`Archivo ZIP generado: ${zipPath}`);
 ## Licencia
 
 [MIT](https://github.com/Novra-tools/NovraLogger/blob/main/LICENSE) © 2026 Novra Tools
+

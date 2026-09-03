@@ -5,13 +5,13 @@ import {
   createLogger,
   registerElectronIpc,
   type LogLevel,
-} from 'novra-logger';
+} from 'desklog';
 
 let mainWindow: BrowserWindow | null = null;
 
-// 1. Initialize main process novra-logger
+// 1. Initialize main process desklog
 const logger = createLogger({
-  appName: 'novra-electron-demo',
+  appName: 'desklog-electron-demo',
   logDir: join(app.getPath('userData'), 'logs'),
   level: 'debug',
   maxFileSize: 5 * 1024 * 1024, // 5MB
@@ -32,7 +32,7 @@ function createWindow() {
     height: 780,
     minWidth: 800,
     minHeight: 600,
-    title: 'novra-logger — Electron Interactive Demo',
+    title: 'desklog — Electron Interactive Demo',
     webPreferences: {
       preload: join(__dirname, 'preload.js'),
       sandbox: false,
@@ -48,7 +48,7 @@ function createWindow() {
   });
 }
 
-// 2. Register standard novra-logger IPC
+// 2. Register standard desklog IPC
 registerElectronIpc(logger, ipcMain);
 
 // 3. Register Demo interactive helper IPC
@@ -92,7 +92,7 @@ ipcMain.handle('demo:read-recent-logs', async (_event, userId?: string) => {
   try {
     const targetFilePath = userId
       ? join(logger.getUserLogDir(userId), 'user.log')
-      : join(logger.getLogDir(), 'app', 'novra-electron-demo.log');
+      : join(logger.getLogDir(), 'app', 'desklog-electron-demo.log');
 
     if (!existsSync(targetFilePath)) {
       return `(Log file not created yet: ${targetFilePath})`;

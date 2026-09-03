@@ -62,13 +62,15 @@ describe('Electron Adapter', () => {
 
     registerElectronIpc(logger, mockIpcMain);
 
+    expect(channels['desklog:write']).toBeDefined();
+    expect(channels['desklog:log-write']).toBeDefined();
+    expect(channels['desklog:dir']).toBeDefined();
+    expect(channels['desklog:pack']).toBeDefined();
+    expect(channels['desklog:clean']).toBeDefined();
     expect(channels['novra:log-write']).toBeDefined();
-    expect(channels['novra:log-dir']).toBeDefined();
-    expect(channels['novra:log-pack']).toBeDefined();
-    expect(channels['novra:log-clean']).toBeDefined();
 
-    // Trigger write test
-    await channels['novra:log-write']({}, {
+    // Trigger write test via desklog channel
+    await channels['desklog:log-write']({}, {
       level: 'warn',
       module: 'IpcTest',
       message: 'IPC message received',

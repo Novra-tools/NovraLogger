@@ -127,7 +127,7 @@ export class RendererLogger implements IScopedLogger {
     try {
       this.options.send(payload);
     } catch (err) {
-      console.warn('[@novra/logger/renderer] Failed to send log payload:', err);
+      console.warn('[desklog/renderer] Failed to send log payload:', err);
     }
 
     // 2. Custom error reporting in production (e.g. Sentry)

@@ -1,12 +1,12 @@
-﻿# novra-logger — 专为 Electron、Tauri 与 Node.js 打造的通用日志收集与管理库
+# desklog — 专为 Electron、Tauri 与 Node.js 打造的通用日志收集与管理库
 
-[![npm version](https://img.shields.io/npm/v/novra-logger?style=flat-square)](https://www.npmjs.com/package/novra-logger)
+[![npm version](https://img.shields.io/npm/v/desklog?style=flat-square)](https://www.npmjs.com/package/desklog)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](https://github.com/Novra-tools/NovraLogger/blob/main/LICENSE)
 [![X (Twitter)](https://img.shields.io/badge/X-@novratools-blue?style=flat-square&logo=x)](https://x.com/novratools)
 
 [English](https://github.com/Novra-tools/NovraLogger/blob/main/README.md) | [简体中文](https://github.com/Novra-tools/NovraLogger/blob/main/README.zh-CN.md) | [日本語](https://github.com/Novra-tools/NovraLogger/blob/main/README.ja.md) | [한국어](https://github.com/Novra-tools/NovraLogger/blob/main/README.ko.md) | [Español](https://github.com/Novra-tools/NovraLogger/blob/main/README.es.md)
 
-**novra-logger** 是专为 **Electron**、**Tauri** 跨端桌面应用以及 **Node.js** 服务端/CLI 打造的通用日志收集与管理库。它开箱即用提供了完整的日志生命周期管理能力：高性能级联滚动轮转、超出上限自动清理过期日志、严格磁盘空间上限控制、敏感数据递归脱敏、多用户隔离存储、一键彻底清空本地日志以及纯 JS ZIP 诊断日志打包。
+**desklog** 是专为 **Electron**、**Tauri** 跨端桌面应用以及 **Node.js** 服务端/CLI 打造的通用日志收集与管理库。它开箱即用提供了完整的日志生命周期管理能力：高性能级联滚动轮转、超出上限自动清理过期日志、严格磁盘空间上限控制、敏感数据递归脱敏、多用户隔离存储、一键彻底清空本地日志以及纯 JS ZIP 诊断日志打包。
 
 ---
 
@@ -33,11 +33,11 @@
 ## 安装
 
 ```bash
-npm install novra-logger
+npm install desklog
 # 或
-pnpm add novra-logger
+pnpm add desklog
 # 或
-yarn add novra-logger
+yarn add desklog
 ```
 
 ---
@@ -47,7 +47,7 @@ yarn add novra-logger
 ### 1. 通用 Node.js / CLI / 后端服务
 
 ```typescript
-import { createLogger } from 'novra-logger';
+import { createLogger } from 'desklog';
 
 // 1. 初始化 Logger 实例
 const logger = createLogger({
@@ -78,7 +78,7 @@ authLog.info('用户登录成功', {
 
 ```typescript
 import { app, ipcMain } from 'electron';
-import { createLogger, registerElectronIpc } from 'novra-logger';
+import { createLogger, registerElectronIpc } from 'desklog';
 
 // 初始化主日志器
 const logger = createLogger({
@@ -86,7 +86,7 @@ const logger = createLogger({
   logDir: `${app.getPath('userData')}/logs`,
 });
 
-// 一键注册 IPC 通道 ('novra:log-write', 'novra:log-pack', 'novra:log-clean', 'novra:log-clear-all')
+// 一键注册 IPC 通道 ('desklog:log-write', 'desklog:log-pack', 'desklog:log-clean', 'desklog:log-clear-all')
 registerElectronIpc(logger, ipcMain);
 ```
 
@@ -95,21 +95,21 @@ registerElectronIpc(logger, ipcMain);
 ```typescript
 import { contextBridge, ipcRenderer } from 'electron';
 
-contextBridge.exposeInMainWorld('novraLogApi', {
-  write: (payload: unknown) => ipcRenderer.invoke('novra:log-write', payload),
-  pack: (options?: unknown) => ipcRenderer.invoke('novra:log-pack', options),
-  clean: (options?: unknown) => ipcRenderer.invoke('novra:log-clean', options),
-  clearAll: () => ipcRenderer.invoke('novra:log-clear-all'),
+contextBridge.exposeInMainWorld('desklog', {
+  write: (payload: unknown) => ipcRenderer.invoke('desklog:log-write', payload),
+  pack: (options?: unknown) => ipcRenderer.invoke('desklog:log-pack', options),
+  clean: (options?: unknown) => ipcRenderer.invoke('desklog:log-clean', options),
+  clearAll: () => ipcRenderer.invoke('desklog:log-clear-all'),
 });
 ```
 
 #### 渲染进程 (`renderer.ts` / React / Vue)
 
 ```typescript
-import { createRendererLogger } from 'novra-logger/renderer';
+import { createRendererLogger } from 'desklog/renderer';
 
 const rendererLogger = createRendererLogger({
-  send: (payload) => (window as any).novraLogApi.write(payload),
+  send: (payload) => (window as any).desklog.write(payload),
   getUserId: () => getCurrentUserId(), // 可选：多用户自动分流隔离
 });
 
@@ -122,7 +122,7 @@ chatLogger.info('正在向会话发送消息', { convId: 'conv_889' });
 
 ### 3. 日志滚动与磁盘占用控制
 
-`novra-logger` 内置了严密的级联滚动与自动淘汰清理机制：
+`desklog` 内置了严密的级联滚动与自动淘汰清理机制：
 
 1. 当活动文件 `app.log` 超过 `maxFileSize`（如 10MB）时，系统自动执行级联重命名：`app.1.log` &rarr; `app.2.log`，`app.log` &rarr; `app.1.log`。
 2. 超过 `maxFiles` 限制的最旧日志（如 `app.3.log`）会被**立即物理删除**，彻底杜绝日志文件无限堆积。
@@ -135,7 +135,7 @@ chatLogger.info('正在向会话发送消息', { convId: 'conv_889' });
 无论是用户主动在设置面板“清除缓存/日志”，还是定时清理历史文件，都可以一键调用：
 
 ```typescript
-import { createLogger } from 'novra-logger';
+import { createLogger } from 'desklog';
 
 const logger = createLogger();
 
@@ -161,7 +161,7 @@ await logger.cleanLogs({
 当用户在界面提交反馈或报错时，可一键将本地日志与系统信息打包为 `.zip`：
 
 ```typescript
-import { createLogger } from 'novra-logger';
+import { createLogger } from 'desklog';
 
 const logger = createLogger();
 
@@ -187,7 +187,7 @@ console.log(`压缩包已生成: ${zipPath} (${size} 字节, 包含 ${fileCount}
 
 | 配置项 | 类型 | 默认值 | 说明 |
 | :--- | :--- | :--- | :--- |
-| `appName` | `string` | `'novra-app'` | 应用程序标识，用于默认目录名称与主日志文件名。 |
+| `appName` | `string` | `'desklog-app'` | 应用程序标识，用于默认目录名称与主日志文件名。 |
 | `logDir` | `string` | *自动推断* | 日志存放根目录。默认推断操作系统标准目录或 `./logs`。 |
 | `level` | `LogLevel` | `'info'` (生产) / `'debug'` (开发) | 最低记录日志级别（`'debug'`, `'info'`, `'warn'`, `'error'`, `'fatal'`）。 |
 | `maxFileSize` | `number` | `10485760` (10MB) | 触发级联轮转的单个日志文件大小上限（字节）。 |

@@ -1,12 +1,12 @@
-﻿# novra-logger — Electron、Tauri、Node.js 向けのユニバーサルなログ収集・管理ライブラリ
+# desklog — Electron、Tauri、Node.js 向けのユニバーサルなログ収集・管理ライブラリ
 
-[![npm version](https://img.shields.io/npm/v/novra-logger?style=flat-square)](https://www.npmjs.com/package/novra-logger)
+[![npm version](https://img.shields.io/npm/v/desklog?style=flat-square)](https://www.npmjs.com/package/desklog)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](https://github.com/Novra-tools/NovraLogger/blob/main/LICENSE)
 [![X (Twitter)](https://img.shields.io/badge/X-@novratools-blue?style=flat-square&logo=x)](https://x.com/novratools)
 
 [English](https://github.com/Novra-tools/NovraLogger/blob/main/README.md) | [简体中文](https://github.com/Novra-tools/NovraLogger/blob/main/README.zh-CN.md) | [日本語](https://github.com/Novra-tools/NovraLogger/blob/main/README.ja.md) | [한국어](https://github.com/Novra-tools/NovraLogger/blob/main/README.ko.md) | [Español](https://github.com/Novra-tools/NovraLogger/blob/main/README.es.md)
 
-**novra-logger** は、**Electron**、**Tauri**、および **Node.js** アプリケーション向けに設計されたユニバーサルなログ収集・管理ライブラリです。カスケードローテーション、上限超過時の自動期限切れログ削除、ディスク使用量の上限制御、機密データの自動マスキング、マルチユーザー分離、ワンクリック全ログ削除、純粋な JS によるワンコール ZIP ログパッケージング機能を提供します。
+**desklog** は、**Electron**、**Tauri**、および **Node.js** アプリケーション向けに設計されたユニバーサルなログ収集・管理ライブラリです。カスケードローテーション、上限超過時の自動期限切れログ削除、ディスク使用量の上限制御、機密データの自動マスキング、マルチユーザー分離、ワンクリック全ログ削除、純粋な JS によるワンコール ZIP ログパッケージング機能を提供します。
 
 ---
 
@@ -31,9 +31,9 @@
 ## インストール
 
 ```bash
-npm install novra-logger
+npm install desklog
 # または
-pnpm add novra-logger
+pnpm add desklog
 ```
 
 ---
@@ -41,7 +41,7 @@ pnpm add novra-logger
 ## クイックスタート
 
 ```typescript
-import { createLogger } from 'novra-logger';
+import { createLogger } from 'desklog';
 
 const logger = createLogger({
   appName: 'my-app',
@@ -84,3 +84,4 @@ console.log(`ZIP 出力完了: ${zipPath}`);
 ## ライセンス
 
 [MIT](https://github.com/Novra-tools/NovraLogger/blob/main/LICENSE) © 2026 Novra Tools
+

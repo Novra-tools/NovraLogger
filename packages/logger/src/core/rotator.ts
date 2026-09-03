@@ -78,7 +78,7 @@ export class FileRotator {
             try {
               unlinkSync(currentPath);
             } catch (err) {
-              console.warn(`[@novra/logger] Failed to remove expired log: ${currentPath}`, err);
+              console.warn(`[desklog] Failed to remove expired log: ${currentPath}`, err);
             }
           }
         } else {
@@ -93,7 +93,7 @@ export class FileRotator {
             try {
               renameSync(currentPath, nextPath);
             } catch (err) {
-              console.warn(`[@novra/logger] Failed to cascade rename ${currentPath} -> ${nextPath}`, err);
+              console.warn(`[desklog] Failed to cascade rename ${currentPath} -> ${nextPath}`, err);
             }
           }
         }
@@ -112,7 +112,7 @@ export class FileRotator {
       this.cleanExcessiveLogFiles(dir, fileName.replace(/\.log$/, ''));
       return true;
     } catch (error) {
-      console.warn(`[@novra/logger] Log rotation failed for ${filePath}:`, error);
+      console.warn(`[desklog] Log rotation failed for ${filePath}:`, error);
       return false;
     }
   }
@@ -146,12 +146,12 @@ export class FileRotator {
           try {
             unlinkSync(file.path);
           } catch (err) {
-            console.warn(`[@novra/logger] Failed to delete excessive log: ${file.name}`, err);
+            console.warn(`[desklog] Failed to delete excessive log: ${file.name}`, err);
           }
         }
       }
     } catch (error) {
-      console.warn(`[@novra/logger] Clean excessive log files failed:`, error);
+      console.warn(`[desklog] Clean excessive log files failed:`, error);
     }
   }
 }

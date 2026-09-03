@@ -1,12 +1,12 @@
-﻿# novra-logger — Electron, Tauri 및 Node.js를 위한 범용 로그 수집 및 관리 라이브러리
+# desklog — Electron, Tauri 및 Node.js를 위한 범용 로그 수집 및 관리 라이브러리
 
-[![npm version](https://img.shields.io/npm/v/novra-logger?style=flat-square)](https://www.npmjs.com/package/novra-logger)
+[![npm version](https://img.shields.io/npm/v/desklog?style=flat-square)](https://www.npmjs.com/package/desklog)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](https://github.com/Novra-tools/NovraLogger/blob/main/LICENSE)
 [![X (Twitter)](https://img.shields.io/badge/X-@novratools-blue?style=flat-square&logo=x)](https://x.com/novratools)
 
 [English](https://github.com/Novra-tools/NovraLogger/blob/main/README.md) | [简体中文](https://github.com/Novra-tools/NovraLogger/blob/main/README.zh-CN.md) | [日本語](https://github.com/Novra-tools/NovraLogger/blob/main/README.ja.md) | [한국어](https://github.com/Novra-tools/NovraLogger/blob/main/README.ko.md) | [Español](https://github.com/Novra-tools/NovraLogger/blob/main/README.es.md)
 
-**novra-logger**는 **Electron**, **Tauri** 및 **Node.js** 애플리케이션을 위해 설계된 범용 로그 수집 및 관리 라이브러리입니다. 캐스케이드 파일 롤링, 한도 초과 시 자동 만료 로그 삭제, 엄격한 디스크 공간 제한 보장, 민감 데이터 자동 마스킹, 멀티 유저 디렉터리 격리, 원클릭 로컬 로그 삭제, 순수 JS 기반의 원클릭 ZIP 압축 진단 패키징 기능을 지원합니다.
+**desklog**는 **Electron**, **Tauri** 및 **Node.js** 애플리케이션을 위해 설계된 범용 로그 수집 및 관리 라이브러리입니다. 캐스케이드 파일 롤링, 한도 초과 시 자동 만료 로그 삭제, 엄격한 디스크 공간 제한 보장, 민감 데이터 자동 마스킹, 멀티 유저 디렉터리 격리, 원클릭 로컬 로그 삭제, 순수 JS 기반의 원클릭 ZIP 압축 진단 패키징 기능을 지원합니다.
 
 ---
 
@@ -31,9 +31,9 @@
 ## 설치
 
 ```bash
-npm install novra-logger
+npm install desklog
 # 또는
-pnpm add novra-logger
+pnpm add desklog
 ```
 
 ---
@@ -41,7 +41,7 @@ pnpm add novra-logger
 ## 빠른 시작
 
 ```typescript
-import { createLogger } from 'novra-logger';
+import { createLogger } from 'desklog';
 
 const logger = createLogger({
   appName: 'my-app',
@@ -84,3 +84,4 @@ console.log(`ZIP 파일 생성 완료: ${zipPath}`);
 ## 라이선스
 
 [MIT](https://github.com/Novra-tools/NovraLogger/blob/main/LICENSE) © 2026 Novra Tools
+

@@ -9,7 +9,7 @@ export class PathResolver {
   private baseLogDir: string;
   private appName: string;
 
-  constructor(appName = 'novra-app', customLogDir?: string) {
+  constructor(appName = 'desklog-app', customLogDir?: string) {
     this.appName = appName;
     this.baseLogDir = customLogDir ? customLogDir : this.resolveDefaultBaseDir(appName);
   }
@@ -18,9 +18,10 @@ export class PathResolver {
    * Resolve standard canonical OS log storage root directory
    */
   private resolveDefaultBaseDir(appName: string): string {
-    // 1. Check explicit environment variable override
-    if (process.env.NOVRA_LOG_DIR) {
-      return process.env.NOVRA_LOG_DIR;
+    // 1. Check explicit environment variable override (supports DESKLOG_DIR and legacy NOVRA_LOG_DIR)
+    const envDir = process.env.DESKLOG_DIR || process.env.NOVRA_LOG_DIR;
+    if (envDir) {
+      return envDir;
     }
 
     const home = homedir();
@@ -54,7 +55,7 @@ export class PathResolver {
     } catch (err) {
       // Fault tolerance: ignore if directory already exists
       if ((err as NodeJS.ErrnoException).code !== 'EEXIST') {
-        console.warn(`[@novra/logger] Failed to ensure directory: ${dirPath}`, err);
+        console.warn(`[desklog] Failed to ensure directory: ${dirPath}`, err);
       }
     }
     return dirPath;

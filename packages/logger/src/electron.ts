@@ -43,29 +43,46 @@ export function createElectronLogHandler(logger: Logger) {
 export function registerElectronIpc(logger: Logger, ipcMain: MinimalIpcMain): void {
   const handler = createElectronLogHandler(logger);
 
-  // 1. Renderer log write channel
-  ipcMain.handle('novra:log-write', async (_event, payload: RendererLogPayload) => {
+  // 1. 渲染进程写入日志 IPC 通道
+  const onWrite = async (_event: unknown, payload: RendererLogPayload) => {
     handler(payload);
-  });
+  };
+  ipcMain.handle('desklog:write', onWrite);
+  ipcMain.handle('desklog:log-write', onWrite);
+  ipcMain.handle('novra:log-write', onWrite); // 兼容旧前缀
 
-  // 2. Get log directory channel
-  ipcMain.handle('novra:log-dir', async (_event, userId?: string) => {
+  // 2. 获取用户或全局日志存储目录
+  const onGetDir = async (_event: unknown, userId?: string) => {
     return logger.getUserLogDir(userId);
-  });
+  };
+  ipcMain.handle('desklog:dir', onGetDir);
+  ipcMain.handle('desklog:log-dir', onGetDir);
+  ipcMain.handle('novra:log-dir', onGetDir); // 兼容旧前缀
 
-  // 3. Package & compress logs channel (for UI diagnostic feedback)
-  ipcMain.handle('novra:log-pack', async (_event, options?: PackLogsOptions) => {
+  // 3. 诊断包一键压缩打包通道 (供用户反馈或排障上传)
+  const onPack = async (_event: unknown, options?: PackLogsOptions) => {
     return logger.packLogs(options);
-  });
+  };
+  ipcMain.handle('desklog:pack', onPack);
+  ipcMain.handle('desklog:log-pack', onPack);
+  ipcMain.handle('novra:log-pack', onPack); // 兼容旧前缀
 
-  // 4. Clean logs channel (supports user, retention days, or all logs)
-  ipcMain.handle('novra:log-clean', async (_event, options?: CleanLogsOptions) => {
+  // 4. 清理日志通道 (支持按用户、按保留天数或全量清理)
+  const onClean = async (_event: unknown, options?: CleanLogsOptions) => {
     return logger.cleanLogs(options);
-  });
-  ipcMain.handle('novra:log-clear', async (_event, options?: CleanLogsOptions) => {
-    return logger.clearLogs(options);
-  });
-  ipcMain.handle('novra:log-clear-all', async () => {
+  };
+  ipcMain.handle('desklog:clean', onClean);
+  ipcMain.handle('desklog:log-clean', onClean);
+  ipcMain.handle('desklog:clear', onClean);
+  ipcMain.handle('desklog:log-clear', onClean);
+  ipcMain.handle('novra:log-clean', onClean); // 兼容旧前缀
+  ipcMain.handle('novra:log-clear', onClean); // 兼容旧前缀
+
+  // 5. 一键彻底清空本地所有日志
+  const onClearAll = async () => {
     return logger.clearAllLogs();
-  });
+  };
+  ipcMain.handle('desklog:clear-all', onClearAll);
+  ipcMain.handle('desklog:log-clear-all', onClearAll);
+  ipcMain.handle('novra:log-clear-all', onClearAll); // 兼容旧前缀
 }

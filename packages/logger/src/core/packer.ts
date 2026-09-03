@@ -80,12 +80,12 @@ export class LogPacker {
           try {
             unlinkSync(file.path);
           } catch (err) {
-            console.warn(`[@novra/logger] Failed to clean old diagnostic zip: ${file.name}`, err);
+            console.warn(`[desklog] Failed to clean old diagnostic zip: ${file.name}`, err);
           }
         }
       }
     } catch (err) {
-      console.warn('[@novra/logger] Clean pending zips failed:', err);
+      console.warn('[desklog] Clean pending zips failed:', err);
     }
   }
 
@@ -101,7 +101,7 @@ export class LogPacker {
 
     const diagnosticsDir = this.pathResolver.getDiagnosticsDir();
     const timestamp = new Date().toISOString().replace(/\D/g, '').slice(0, 14);
-    const defaultZipName = `novra-logs-${options.userId ? `${options.userId}-` : ''}${timestamp}.zip`;
+    const defaultZipName = `desklog-${options.userId ? `${options.userId}-` : ''}${timestamp}.zip`;
 
     const finalZipPath = options.outputZipPath
       ? options.outputZipPath
@@ -121,7 +121,7 @@ export class LogPacker {
         zipData[relativePath] = new Uint8Array(content);
         fileCount++;
       } catch (err) {
-        console.warn(`[@novra/logger] Failed to read log file for packaging: ${filePath}`, err);
+        console.warn(`[desklog] Failed to read log file for packaging: ${filePath}`, err);
       }
     }
 

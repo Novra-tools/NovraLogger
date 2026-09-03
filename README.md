@@ -1,12 +1,12 @@
-﻿# novra-logger — Universal Log Collection & Management Library for Electron, Tauri & Node.js
+# desklog — Universal Log Collection & Management Library for Electron, Tauri & Node.js
 
-[![npm version](https://img.shields.io/npm/v/novra-logger?style=flat-square)](https://www.npmjs.com/package/novra-logger)
+[![npm version](https://img.shields.io/npm/v/desklog?style=flat-square)](https://www.npmjs.com/package/desklog)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](https://github.com/Novra-tools/NovraLogger/blob/main/LICENSE)
 [![X (Twitter)](https://img.shields.io/badge/X-@novratools-blue?style=flat-square&logo=x)](https://x.com/novratools)
 
 [English](https://github.com/Novra-tools/NovraLogger/blob/main/README.md) | [简体中文](https://github.com/Novra-tools/NovraLogger/blob/main/README.zh-CN.md) | [日本語](https://github.com/Novra-tools/NovraLogger/blob/main/README.ja.md) | [한국어](https://github.com/Novra-tools/NovraLogger/blob/main/README.ko.md) | [Español](https://github.com/Novra-tools/NovraLogger/blob/main/README.es.md)
 
-**novra-logger** is a universal, zero-host-dependency log collection and management library specifically designed for **Electron**, **Tauri**, and **Node.js** applications. It delivers a full-featured logging ecosystem out-of-the-box: high-performance cascade file rotation, automatic expired log purging, strict disk space bounding, recursive sensitive data masking, multi-user/tenant directory isolation, one-click local log wipe, and one-call pure-JS ZIP diagnostic log packaging.
+**desklog** is a universal, zero-host-dependency log collection and management library specifically designed for **Electron**, **Tauri**, and **Node.js** applications. It delivers a full-featured logging ecosystem out-of-the-box: high-performance cascade file rotation, automatic expired log purging, strict disk space bounding, recursive sensitive data masking, multi-user/tenant directory isolation, one-click local log wipe, and one-call pure-JS ZIP diagnostic log packaging.
 
 ---
 
@@ -33,11 +33,11 @@
 ## Installation
 
 ```bash
-npm install novra-logger
+npm install desklog
 # or
-pnpm add novra-logger
+pnpm add desklog
 # or
-yarn add novra-logger
+yarn add desklog
 ```
 
 ---
@@ -47,7 +47,7 @@ yarn add novra-logger
 ### 1. Standard Node.js / CLI / Backend
 
 ```typescript
-import { createLogger } from 'novra-logger';
+import { createLogger } from 'desklog';
 
 // 1. Initialize logger
 const logger = createLogger({
@@ -78,7 +78,7 @@ authLog.info('User authenticated', {
 
 ```typescript
 import { app, ipcMain } from 'electron';
-import { createLogger, registerElectronIpc } from 'novra-logger';
+import { createLogger, registerElectronIpc } from 'desklog';
 
 // Initialize the main logger
 const logger = createLogger({
@@ -86,7 +86,7 @@ const logger = createLogger({
   logDir: `${app.getPath('userData')}/logs`,
 });
 
-// Register IPC handlers ('novra:log-write', 'novra:log-pack', 'novra:log-clean', 'novra:log-clear-all')
+// Register IPC handlers ('desklog:log-write', 'desklog:log-pack', 'desklog:log-clean', 'desklog:log-clear-all')
 registerElectronIpc(logger, ipcMain);
 ```
 
@@ -95,21 +95,21 @@ registerElectronIpc(logger, ipcMain);
 ```typescript
 import { contextBridge, ipcRenderer } from 'electron';
 
-contextBridge.exposeInMainWorld('novraLogApi', {
-  write: (payload: unknown) => ipcRenderer.invoke('novra:log-write', payload),
-  pack: (options?: unknown) => ipcRenderer.invoke('novra:log-pack', options),
-  clean: (options?: unknown) => ipcRenderer.invoke('novra:log-clean', options),
-  clearAll: () => ipcRenderer.invoke('novra:log-clear-all'),
+contextBridge.exposeInMainWorld('desklog', {
+  write: (payload: unknown) => ipcRenderer.invoke('desklog:log-write', payload),
+  pack: (options?: unknown) => ipcRenderer.invoke('desklog:log-pack', options),
+  clean: (options?: unknown) => ipcRenderer.invoke('desklog:log-clean', options),
+  clearAll: () => ipcRenderer.invoke('desklog:log-clear-all'),
 });
 ```
 
 #### Renderer Process (`renderer.ts` / React / Vue)
 
 ```typescript
-import { createRendererLogger } from 'novra-logger/renderer';
+import { createRendererLogger } from 'desklog/renderer';
 
 const rendererLogger = createRendererLogger({
-  send: (payload) => (window as any).novraLogApi.write(payload),
+  send: (payload) => (window as any).desklog.write(payload),
   getUserId: () => getCurrentUserId(), // Optional: automatically isolates user logs
 });
 
@@ -122,7 +122,7 @@ chatLogger.info('Sending message to conversation', { convId: 'conv_889' });
 
 ### 3. Log Rotation & Disk Space Control
 
-`novra-logger` features an automatic cascade rotation mechanism:
+`desklog` features an automatic cascade rotation mechanism:
 
 1. When `app.log` exceeds `maxFileSize` (e.g. 10MB), it rolls `app.1.log` &rarr; `app.2.log`, and `app.log` &rarr; `app.1.log`.
 2. Any older archive beyond `maxFiles` (e.g. `app.3.log`) is **immediately and permanently unlinked from disk**, guaranteeing your app never exceeds the configured disk ceiling (`maxFileSize * maxFiles`).
@@ -135,18 +135,18 @@ chatLogger.info('Sending message to conversation', { convId: 'conv_889' });
 Clean expired logs, wipe user logs, or completely clear all application logs with one call:
 
 ```typescript
-import { createLogger } from 'novra-logger';
+import { createLogger } from 'desklog';
 
 const logger = createLogger();
 
-// 1. One-click complete wipe of all logs, user subdirectories, and temporary diagnostic zips
+// 1. Completely wipe all local application logs, user-isolated logs, and diagnostic archives
 const wipeResult = await logger.clearAllLogs();
-console.log(`Cleaned ${wipeResult.deletedCount} files.`);
+console.log(`Successfully deleted ${wipeResult.deletedCount} files.`);
 
-// 2. Clean specific user's logs
+// 2. Clear only the current user's isolated logs
 await logger.clearLogs({ userId: 'user_1001' });
 
-// 3. Clean logs older than 7 days and retain only latest 2 Crashpad .dmp dumps
+// 3. Clean logs older than 7 days, retaining up to 2 recent crash dumps
 await logger.cleanLogs({
   maxAgeDays: 7,
   retainCrashDumps: 2,
@@ -156,38 +156,38 @@ await logger.cleanLogs({
 
 ---
 
-### 5. Log Packaging & Diagnostic Export (For User Feedback)
+### 5. One-Call Diagnostic ZIP Packaging
 
-When a user submits a bug report or feedback, package all local logs and system metadata into a `.zip` file with a single call:
+When users report an issue, package local logs and system metadata into a `.zip` file with a single call:
 
 ```typescript
-import { createLogger } from 'novra-logger';
+import { createLogger } from 'desklog';
 
 const logger = createLogger();
 
-// Compress logs for diagnostic upload
+// Package logs
 const { zipPath, size, fileCount } = await logger.packLogs({
   userId: 'current_user_id', // Optional: pack only this user's logs
   metadata: {
     appVersion: '1.2.0',
     os: process.platform,
-    userDescription: 'Chat disconnected unexpectedly',
+    issueDescription: 'Video stream black screen on startup',
   },
 });
 
-console.log(`Zip archive ready at ${zipPath} (${size} bytes, ${fileCount} files)`);
-// -> Upload zipPath to your S3 / OSS storage
+console.log(`Diagnostics ZIP ready: ${zipPath} (${size} bytes, ${fileCount} files)`);
+// -> Upload zipPath to your backend / S3 / OSS
 ```
 
 ---
 
-## Configuration Reference
+## Configuration Options
 
-`createLogger(options)` accepts the following options:
+`createLogger(options)` accepts the following configuration:
 
 | Option | Type | Default | Description |
 | :--- | :--- | :--- | :--- |
-| `appName` | `string` | `'novra-app'` | Application identifier used for default directory paths and log file names. |
+| `appName` | `string` | `'desklog-app'` | Application identifier. Used for the default log directory and filename. |
 | `logDir` | `string` | *Auto-detected* | Target directory for log files. Defaults to OS AppData/Logs directory or `./logs`. |
 | `level` | `LogLevel` | `'info'` (prod) / `'debug'` (dev) | Lowest log level to record (`'debug'`, `'info'`, `'warn'`, `'error'`, `'fatal'`). |
 | `maxFileSize` | `number` | `10485760` (10MB) | Maximum file size in bytes before triggering rotation. |
