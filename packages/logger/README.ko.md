@@ -1,7 +1,17 @@
 # desklog — Electron, Tauri 및 Node.js를 위한 범용 로그 수집 및 관리 라이브러리
 
-[![npm version](https://img.shields.io/npm/v/desklog?style=flat-square)](https://www.npmjs.com/package/desklog)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](https://github.com/Novra-tools/NovraLogger/blob/main/LICENSE)
+[![npm version](https://img.shields.io/npm/v/desklog?style=flat-square&color=cb3837)](https://www.npmjs.com/package/desklog)
+[![npm total downloads](https://img.shields.io/npm/dt/desklog?style=flat-square&color=blue)](https://www.npmjs.com/package/desklog)
+[![npm monthly downloads](https://img.shields.io/npm/dm/desklog?style=flat-square&color=2088FF)](https://www.npmjs.com/package/desklog)
+[![License](https://img.shields.io/npm/l/desklog?style=flat-square)](https://github.com/Novra-tools/NovraLogger/blob/main/LICENSE)
+[![Platform](https://img.shields.io/badge/Platform-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey?style=flat-square)](https://github.com/Novra-tools/NovraLogger)
+[![Modules](https://img.shields.io/badge/Modules-ESM%20%7C%20CJS-informational?style=flat-square)](https://github.com/Novra-tools/NovraLogger)
+[![Electron](https://img.shields.io/badge/Electron-Ready-47848F?style=flat-square&logo=electron&logoColor=white)](https://www.electronjs.org)
+[![Tauri](https://img.shields.io/badge/Tauri-Ready-24C8DB?style=flat-square&logo=tauri&logoColor=white)](https://tauri.app)
+[![Node.js](https://img.shields.io/badge/Node.js-%3E%3D18-339933?style=flat-square&logo=node.js&logoColor=white)](https://nodejs.org)
+[![TypeScript](https://img.shields.io/badge/TypeScript-Ready-3178C6?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Zero Native Addons](https://img.shields.io/badge/Native%20Addons-0-success?style=flat-square)](https://github.com/Novra-tools/NovraLogger)
+[![CI Status](https://img.shields.io/github/actions/workflow/status/Novra-tools/NovraLogger/ci.yml?branch=main&style=flat-square&label=CI)](https://github.com/Novra-tools/NovraLogger/actions)
 [![X (Twitter)](https://img.shields.io/badge/X-@novratools-blue?style=flat-square&logo=x)](https://x.com/novratools)
 
 [English](https://github.com/Novra-tools/NovraLogger/blob/main/README.md) | [简体中文](https://github.com/Novra-tools/NovraLogger/blob/main/README.zh-CN.md) | [日本語](https://github.com/Novra-tools/NovraLogger/blob/main/README.ja.md) | [한국어](https://github.com/Novra-tools/NovraLogger/blob/main/README.ko.md) | [Español](https://github.com/Novra-tools/NovraLogger/blob/main/README.es.md)
@@ -84,4 +94,5 @@ console.log(`ZIP 파일 생성 완료: ${zipPath}`);
 ## 라이선스
 
 [MIT](https://github.com/Novra-tools/NovraLogger/blob/main/LICENSE) © 2026 Novra Tools
+
 

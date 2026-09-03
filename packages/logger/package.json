@@ -1,6 +1,6 @@
 {
   "name": "desklog",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Universal desktop logging & diagnostics engine for Electron, Tauri, and Node.js. Features cascade file rotation, strict disk bounding, sensitive data masking, multi-user isolation, and one-click diagnostic ZIP packaging.",
   "license": "MIT",
   "author": {
